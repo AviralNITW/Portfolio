@@ -2,13 +2,17 @@
 
 import React, { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { MeshTransmissionMaterial, Float } from "@react-three/drei";
+import { Float, Stars, Environment, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 
 function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
   const pointLight1 = useRef<THREE.PointLight>(null);
   const pointLight2 = useRef<THREE.PointLight>(null);
+  const pointLight3 = useRef<THREE.PointLight>(null);
+  const groupRef = useRef<THREE.Group>(null);
   
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
 
@@ -30,82 +34,168 @@ function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
 
-    // Rotate the object slowly
-    if (meshRef.current) {
-      meshRef.current.rotation.x = time * 0.1;
-      meshRef.current.rotation.y = time * 0.15;
-      
+    // Breathing scale animation for the entire group (very slow and organic)
+    if (groupRef.current) {
+      const breathingScale = 1.0 + Math.sin(time * 0.35) * 0.025;
+      groupRef.current.scale.set(breathingScale, breathingScale, breathingScale);
+
+      // Smooth mouse-controlled tilt (Apple Vision Pro style)
       if (!isMobile) {
-        // Smoothly tilt object towards cursor
-        meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, mouse.x * 0.6, 0.05);
-        meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, mouse.y * 0.6, 0.05);
+        groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, mouse.x * 0.22, 0.025);
+        groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -mouse.y * 0.22, 0.025);
       }
-      
-      // Pulse scale slightly
-      const scaleFactor = 1.35 + Math.sin(time * 0.8) * 0.05;
-      meshRef.current.scale.set(scaleFactor, scaleFactor, scaleFactor);
     }
 
+    // Slowly rotate central gold-chrome sphere
+    if (meshRef.current) {
+      meshRef.current.rotation.y = time * 0.04;
+    }
+
+    // Orbiting rotations for the two nested transmissive gold bangles
+    if (ring1Ref.current) {
+      ring1Ref.current.rotation.x = time * 0.035;
+      ring1Ref.current.rotation.y = time * 0.055;
+    }
+
+    if (ring2Ref.current) {
+      ring2Ref.current.rotation.x = time * 0.045;
+      ring2Ref.current.rotation.y = -time * 0.06;
+      ring2Ref.current.rotation.z = time * 0.025;
+    }
+
+    // Dynamic light sweeps following the cursor slowly
     if (!isMobile) {
-      // Move lights dynamically to sweep reflections across the glass geometry
       if (pointLight1.current) {
-        pointLight1.current.position.x = THREE.MathUtils.lerp(pointLight1.current.position.x, mouse.x * 4, 0.07);
-        pointLight1.current.position.y = THREE.MathUtils.lerp(pointLight1.current.position.y, mouse.y * 4 + 2, 0.07);
+        pointLight1.current.position.x = THREE.MathUtils.lerp(pointLight1.current.position.x, mouse.x * 2.5 + 4, 0.04);
+        pointLight1.current.position.y = THREE.MathUtils.lerp(pointLight1.current.position.y, mouse.y * 2.5 + 3.5, 0.04);
       }
       if (pointLight2.current) {
-        pointLight2.current.position.x = THREE.MathUtils.lerp(pointLight2.current.position.x, -mouse.x * 4, 0.07);
-        pointLight2.current.position.y = THREE.MathUtils.lerp(pointLight2.current.position.y, -mouse.y * 4 - 2, 0.07);
+        pointLight2.current.position.x = THREE.MathUtils.lerp(pointLight2.current.position.x, mouse.x * 2 - 4, 0.04);
+        pointLight2.current.position.y = THREE.MathUtils.lerp(pointLight2.current.position.y, mouse.y * 2 - 3, 0.04);
       }
     }
   });
 
   return (
-    <group>
-      {/* Luxury lighting configuration */}
-      <ambientLight intensity={0.4} />
+    <group ref={groupRef}>
+      {/* Fog for atmospheric depth */}
+      <fog attach="fog" args={["#050505", 2.2, 5.0]} />
+
+      {/* HDRI Environment for realistic chrome/glass reflections */}
+      <Environment preset="studio" />
+
+      {/* Floating Dust Particles */}
+      <Sparkles count={55} scale={5.0} size={1.5} speed={0.15} color="#e8d7b5" opacity={0.6} />
+
+      {/* Stars Background */}
+      <Stars radius={70} depth={50} count={600} factor={2} saturation={0.5} fade speed={0.8} />
+
+      {/* Volumetric Gold & Purple Glowing Atmosphere (Behind the Sculpture) */}
+      <mesh position={[-0.4, 0.4, -0.8]}>
+        <sphereGeometry args={[1.5, 32, 32]} />
+        <meshBasicMaterial
+          color="#ffe8be"
+          transparent={true}
+          opacity={0.03}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh position={[0.4, -0.4, -0.8]}>
+        <sphereGeometry args={[1.8, 32, 32]} />
+        <meshBasicMaterial
+          color="#a855f7"
+          transparent={true}
+          opacity={0.035}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Luxury Lighting Configuration */}
+      <ambientLight intensity={0.15} />
       
+      {/* Key Light 1: Back-Right-Rim (Warm Gold edge glow) */}
       <pointLight
         ref={pointLight1}
-        position={[3, 3, 2]}
-        intensity={isMobile ? 3 : 5}
-        color="#c5a880" /* Luxury Gold */
+        position={[3.0, -2.0, -2.5]}
+        intensity={isMobile ? 15 : 95}
+        color="#ffbc66" /* Rich golden edge reflection */
         decay={1.2}
       />
+      
+      {/* Key Light 2: Back-Left-Rim (Warm Gold edge glow) */}
       <pointLight
         ref={pointLight2}
-        position={[-3, -3, 2]}
-        intensity={isMobile ? 2.5 : 4}
-        color="#00f2fe" /* Sapphire Blue */
+        position={[-3.0, 2.0, -2.5]}
+        intensity={isMobile ? 12 : 85}
+        color="#ffb855" /* Warm gold/amber rim */
         decay={1.2}
       />
+      
+      {/* Key Light 3: Front-Right-Top (Soft Gold Face Highlight) */}
       <directionalLight 
-        position={[0, 5, -3]} 
-        intensity={2.5} 
-        color="#9b51e0" /* Amethyst Purple back glow */ 
+        position={[2.5, 2.5, 3.0]} 
+        intensity={18} 
+        color="#ffe3b3" 
       />
 
-      <Float speed={1.2} rotationIntensity={0.4} floatIntensity={0.5}>
+      {/* Accent Light 4: Purple Rim Light (Back-Top-Right) */}
+      <pointLight
+        ref={pointLight3}
+        position={[2.5, 3.0, -2.5]}
+        intensity={isMobile ? 10 : 55}
+        color="#a855f7" /* Rich purple rim */
+        decay={1.2}
+      />
+
+      {/* 3D Structure Group */}
+      <group scale={isMobile ? 0.88 : 1.30}>
+        
+        {/* Central Black Chrome Sphere */}
         <mesh ref={meshRef}>
-          {/* TorusKnot creates a complex structure that shows off refraction and light highlights */}
-          <torusKnotGeometry args={[1.0, 0.32, isMobile ? 80 : 160, isMobile ? 12 : 24]} />
-          
-          {/* High-end glass material with refraction and chromatic aberration */}
-          <MeshTransmissionMaterial
-            backside={!isMobile} // Disable backside transmission on mobile for performance
-            backsideThickness={0.15}
-            thickness={0.6}
-            ior={1.45}
-            transmission={0.92}
-            chromaticAberration={0.06}
-            anisotropy={0.2}
-            roughness={0.06}
-            distortion={0.25}
-            distortionScale={0.15}
-            temporalDistortion={0.1}
-            color="#ffffff"
+          <sphereGeometry args={[0.42, 64, 64]} />
+          <meshPhysicalMaterial
+            color="#030303" /* Deep black obsidian */
+            metalness={0.98}
+            roughness={0.02}
+            clearcoat={1.0}
+            clearcoatRoughness={0.02}
+            envMapIntensity={2.5}
           />
         </mesh>
-      </Float>
+
+        {/* Nested Torus 1 (Inner Bangle - Wide Clear Glass) */}
+        <mesh ref={ring1Ref} rotation={[0.8, -0.5, -0.5]} scale={[1.0, 1.0, 4.2]}>
+          <torusGeometry args={[0.82, 0.065, 32, 120]} />
+          <meshPhysicalMaterial
+            color="#050505" /* Dark smoked glass body */
+            transparent={true}
+            opacity={0.35} /* Clear transmissive depth */
+            roughness={0.01} /* Razor-sharp reflections */
+            metalness={0.1}
+            clearcoat={1.0}
+            clearcoatRoughness={0.01}
+            ior={2.2} /* High refraction index for strong edge Fresnel glow */
+            envMapIntensity={0.25} /* Reduces white studio environment wash */
+          />
+        </mesh>
+
+        {/* Nested Torus 2 (Outer Bangle - Wide Clear Glass) */}
+        <mesh ref={ring2Ref} rotation={[Math.PI / 4, -Math.PI / 6, Math.PI / 8]} scale={[1.0, 1.0, 5.5]}>
+          <torusGeometry args={[1.04, 0.05, 32, 120]} />
+          <meshPhysicalMaterial
+            color="#050505"
+            transparent={true}
+            opacity={0.35}
+            roughness={0.01}
+            metalness={0.1}
+            clearcoat={1.0}
+            clearcoatRoughness={0.01}
+            ior={2.2}
+            envMapIntensity={0.25}
+          />
+        </mesh>
+
+      </group>
     </group>
   );
 }
@@ -126,9 +216,9 @@ export default function ThreeHeroScene() {
 
   if (!mounted) {
     return (
-      <div className="absolute inset-0 bg-[#030306] flex items-center justify-center">
+      <div className="absolute inset-0 bg-[#050505] flex items-center justify-center">
         {/* Sleek loading state */}
-        <div className="w-8 h-8 rounded-full border border-t-transparent border-[#c5a880] animate-spin" />
+        <div className="w-8 h-8 rounded-full border border-t-transparent border-[#e8d7b5] animate-spin" />
       </div>
     );
   }
@@ -136,7 +226,7 @@ export default function ThreeHeroScene() {
   return (
     <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
       <Canvas
-        camera={{ position: [0, 0, 4.2], fov: 45 }}
+        camera={{ position: [0, 0, 4.0], fov: 45 }}
         gl={{ antialias: !isMobile, alpha: true, preserveDrawingBuffer: true }}
         dpr={isMobile ? [1, 1.5] : [1, 2]}
         className="w-full h-full"

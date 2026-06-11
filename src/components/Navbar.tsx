@@ -70,29 +70,26 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        className={`fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl z-50 transition-all duration-500 rounded-full ${
           isScrolled
-            ? "py-3 bg-[#030306]/80 backdrop-blur-xl border-b border-white/5 shadow-2xl shadow-black/40"
-            : "py-5 bg-transparent border-b border-transparent"
+            ? "py-3 px-6 bg-[#050505]/85 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/40"
+            : "py-4 px-6 bg-white/[0.02] backdrop-blur-md border border-white/5"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="flex items-center justify-between w-full">
           {/* Logo */}
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, "#home")}
-            className="group flex items-center gap-2 text-xl font-bold tracking-wider"
+            className="group flex items-center gap-2 text-lg font-serif tracking-widest"
           >
-            <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c5a880] to-[#e6d3ba] flex items-center justify-center text-[#030306] font-extrabold text-sm shadow-lg shadow-[#c5a880]/10 group-hover:scale-105 transition-transform duration-300">
-              A
-            </span>
-            <span className="text-white group-hover:text-luxury-gold transition-colors duration-300">
+            <span className="font-light tracking-[0.25em] text-[#e8d7b5] group-hover:text-white transition-colors duration-300">
               AURA
             </span>
           </a>
 
           {/* Desktop Nav Items */}
-          <nav className="hidden md:flex items-center gap-1 bg-white/[0.02] border border-white/5 p-1 rounded-full backdrop-blur-md">
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const id = item.href.substring(1);
               const isActive = activeSection === id;
@@ -101,14 +98,14 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`relative px-5 py-2 text-xs uppercase tracking-widest font-semibold transition-colors duration-300 rounded-full ${
-                    isActive ? "text-white" : "text-[#94a3b8] hover:text-white"
+                  className={`relative px-4 py-1.5 text-[9px] uppercase tracking-[0.25em] font-semibold transition-colors duration-300 rounded-full ${
+                    isActive ? "text-[#e8d7b5]" : "text-[#8a8a8a] hover:text-white"
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="activeNavIndicator"
-                      className="absolute inset-0 bg-white/[0.06] border border-white/10 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                      className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#e8d7b5] shadow-[0_0_8px_#e8d7b5]"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -123,9 +120,9 @@ export default function Navbar() {
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, "#contact")}
-              className="relative px-5 py-2 text-xs font-semibold uppercase tracking-widest text-[#030306] bg-gradient-to-r from-[#c5a880] to-[#e6d3ba] rounded-full flex items-center gap-1 shadow-lg shadow-[#c5a880]/20 hover:shadow-[#c5a880]/40 transition-all duration-300 hover:scale-[1.03]"
+              className="relative px-5 py-2 text-[9px] font-bold uppercase tracking-widest text-[#e8d7b5] hover:text-[#050505] bg-transparent border border-[#e8d7b5]/30 hover:bg-[#e8d7b5] rounded-full flex items-center gap-1 shadow-lg hover:shadow-[#e8d7b5]/10 transition-all duration-300 hover:scale-[1.03]"
             >
-              Get In Touch
+              Let's Connect
               <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -149,7 +146,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-[#030306]/98 backdrop-blur-2xl flex flex-col justify-center px-12 md:hidden"
+            className="fixed inset-0 z-40 bg-[#050505]/98 backdrop-blur-2xl flex flex-col justify-center px-12 md:hidden"
           >
             <div className="flex flex-col gap-6">
               {navItems.map((item, index) => {
@@ -163,8 +160,8 @@ export default function Navbar() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className={`text-2xl uppercase tracking-widest font-bold flex items-center justify-between border-b border-white/5 py-4 ${
-                      isActive ? "gold-glow-text" : "text-slate-400 hover:text-white"
+                    className={`text-xl uppercase tracking-widest font-bold flex items-center justify-between border-b border-white/5 py-4 ${
+                      isActive ? "text-[#e8d7b5]" : "text-slate-400 hover:text-white"
                     }`}
                   >
                     <span>{item.name}</span>
@@ -183,7 +180,7 @@ export default function Navbar() {
               <a
                 href="#contact"
                 onClick={(e) => handleNavClick(e, "#contact")}
-                className="w-full inline-flex items-center justify-center px-8 py-4 text-xs font-semibold uppercase tracking-widest text-[#030306] bg-gradient-to-r from-[#c5a880] to-[#e6d3ba] rounded-full shadow-lg shadow-[#c5a880]/20"
+                className="w-full inline-flex items-center justify-center px-8 py-4 text-xs font-semibold uppercase tracking-widest text-[#050505] bg-[#e8d7b5] rounded-full shadow-lg shadow-[#e8d7b5]/10"
               >
                 Let's Talk
               </a>
