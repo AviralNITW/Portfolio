@@ -15,12 +15,36 @@ export default function Contact() {
     
     setIsSubmitting(true);
     
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    setFormState({ name: "", email: "", subject: "", message: "" });
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/aviralmishra756@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name: formState.name,
+          email: formState.email,
+          subject: formState.subject || "Portfolio Contact Message",
+          message: formState.message
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setIsSuccess(true);
+        setFormState({ name: "", email: "", subject: "", message: "" });
+      } else {
+        console.error("FormSubmit Error:", data);
+        alert("Oops! There was a problem submitting your form. Please try again.");
+      }
+    } catch (error) {
+      console.error("FormSubmit Connection Error:", error);
+      alert("Unable to connect to the email server. Please check your internet connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

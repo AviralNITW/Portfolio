@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, Variants } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ArrowRight, FileText, Github, Linkedin, Mail, Twitter } from "lucide-react";
@@ -9,11 +9,13 @@ import { ArrowRight, FileText, Github, Linkedin, Mail, Twitter } from "lucide-re
 const ThreeHeroScene = dynamic(() => import("./ThreeHeroScene"), { ssr: false });
 
 export default function Hero() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      if (glowRef.current) {
+        glowRef.current.style.background = `radial-gradient(500px circle at ${e.clientX}px ${e.clientY}px, rgba(232, 215, 181, 0.04), transparent 80%)`;
+      }
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -64,9 +66,10 @@ export default function Hero() {
 
       {/* Layer 2: Cursor spotlight glow */}
       <div 
+        ref={glowRef}
         className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
         style={{
-          background: `radial-gradient(500px circle at ${mousePos.x}px ${mousePos.y}px, rgba(232, 215, 181, 0.04), transparent 80%)`
+          background: "radial-gradient(500px circle at 0px 0px, rgba(232, 215, 181, 0.04), transparent 80%)"
         }}
       />
 
@@ -136,16 +139,7 @@ export default function Hero() {
             {/* Hero Main Copy */}
             <div className="flex-grow space-y-7">
               
-              {/* Tagline Pill */}
-              <motion.div
-                variants={itemVariants}
-                className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.02] border border-white/5 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse animate-duration-1000" />
-                <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-slate-300">
-                  AI Full-Stack Developer & MCA @ NIT Warangal
-                </span>
-              </motion.div>
+
 
               {/* Headline Name */}
               <motion.h1
@@ -190,11 +184,9 @@ export default function Hero() {
                 </a>
                 
                 <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert("Resume download triggered!");
-                  }}
+                  href="/Aviral_Resume.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="px-8 py-4 rounded-full bg-transparent border border-white/10 hover:border-white/20 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white/[0.03] hover:scale-[1.03] transition-all duration-300"
                 >
                   View Resume
@@ -206,11 +198,7 @@ export default function Hero() {
 
           {/* Right Side: Orbital Ring 3D Scene with Overlap */}
           <div className="lg:col-span-5 w-full h-[50vh] lg:h-[65vh] relative flex items-center justify-center lg:-ml-24 z-0">
-            {/* Layer 5: Decorative Orbital SVG curves */}
-            <svg className="absolute w-[180%] h-[180%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-[0.38] z-0" viewBox="0 0 100 100">
-              <ellipse cx="50" cy="50" rx="36" ry="18" fill="none" stroke="rgba(232, 215, 181, 0.28)" strokeWidth="0.15" transform="rotate(-25 50 50)" />
-              <ellipse cx="50" cy="50" rx="43" ry="21" fill="none" stroke="rgba(255, 255, 255, 0.14)" strokeWidth="0.1" transform="rotate(-12 50 50)" />
-            </svg>
+
             
             {/* Subtle Blue-Purple Radial Halo behind sculpture */}
             <div 
@@ -232,7 +220,7 @@ export default function Hero() {
           {/* Stats strip */}
           <div className="md:col-span-5 flex items-center justify-between md:justify-start gap-8 flex-wrap">
             <div className="text-left">
-              <p className="text-2xl sm:text-3xl font-serif text-white">10+</p>
+              <p className="text-2xl sm:text-3xl font-serif text-white">3</p>
               <p className="text-[9px] uppercase tracking-widest text-[#8a8a8a] font-bold">Projects Completed</p>
             </div>
             <div className="text-left">
@@ -240,11 +228,7 @@ export default function Hero() {
               <p className="text-[9px] uppercase tracking-widest text-[#8a8a8a] font-bold">Years Coding</p>
             </div>
             <div className="text-left">
-              <p className="text-2xl sm:text-3xl font-serif text-white">2</p>
-              <p className="text-[9px] uppercase tracking-widest text-[#8a8a8a] font-bold">Hackathon Wins</p>
-            </div>
-            <div className="text-left">
-              <p className="text-2xl sm:text-3xl font-serif text-[#e8d7b5]">100%</p>
+              <p className="text-2xl sm:text-3xl font-serif text-white">100%</p>
               <p className="text-[9px] uppercase tracking-widest text-[#8a8a8a] font-bold">Commitment</p>
             </div>
           </div>

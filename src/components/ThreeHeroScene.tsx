@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Stars, Environment, Sparkles } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 
 function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
@@ -13,26 +13,10 @@ function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
   const pointLight2 = useRef<THREE.PointLight>(null);
   const pointLight3 = useRef<THREE.PointLight>(null);
   const groupRef = useRef<THREE.Group>(null);
-  
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    if (isMobile) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      // Normalize mouse coordinates from -1 to 1
-      setMouse({
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: -(e.clientY / window.innerHeight) * 2 + 1,
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [isMobile]);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
+    const { x: pointerX, y: pointerY } = state.pointer;
 
     // Breathing scale animation for the entire group (very slow and organic)
     if (groupRef.current) {
@@ -41,8 +25,8 @@ function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
 
       // Smooth mouse-controlled tilt (Apple Vision Pro style)
       if (!isMobile) {
-        groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, mouse.x * 0.22, 0.025);
-        groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -mouse.y * 0.22, 0.025);
+        groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, pointerX * 0.22, 0.025);
+        groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -pointerY * 0.22, 0.025);
       }
     }
 
@@ -66,12 +50,12 @@ function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
     // Dynamic light sweeps following the cursor slowly
     if (!isMobile) {
       if (pointLight1.current) {
-        pointLight1.current.position.x = THREE.MathUtils.lerp(pointLight1.current.position.x, mouse.x * 2.5 + 4, 0.04);
-        pointLight1.current.position.y = THREE.MathUtils.lerp(pointLight1.current.position.y, mouse.y * 2.5 + 3.5, 0.04);
+        pointLight1.current.position.x = THREE.MathUtils.lerp(pointLight1.current.position.x, pointerX * 2.5 + 4, 0.04);
+        pointLight1.current.position.y = THREE.MathUtils.lerp(pointLight1.current.position.y, pointerY * 2.5 + 3.5, 0.04);
       }
       if (pointLight2.current) {
-        pointLight2.current.position.x = THREE.MathUtils.lerp(pointLight2.current.position.x, mouse.x * 2 - 4, 0.04);
-        pointLight2.current.position.y = THREE.MathUtils.lerp(pointLight2.current.position.y, mouse.y * 2 - 3, 0.04);
+        pointLight2.current.position.x = THREE.MathUtils.lerp(pointLight2.current.position.x, pointerX * 2 - 4, 0.04);
+        pointLight2.current.position.y = THREE.MathUtils.lerp(pointLight2.current.position.y, pointerY * 2 - 3, 0.04);
       }
     }
   });
@@ -84,11 +68,7 @@ function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
       {/* HDRI Environment for realistic chrome/glass reflections */}
       <Environment preset="studio" />
 
-      {/* Floating Dust Particles */}
-      <Sparkles count={55} scale={5.0} size={1.5} speed={0.15} color="#e8d7b5" opacity={0.6} />
 
-      {/* Stars Background */}
-      <Stars radius={70} depth={50} count={600} factor={2} saturation={0.5} fade speed={0.8} />
 
       {/* Volumetric Gold & Purple Glowing Atmosphere (Behind the Sculpture) */}
       <mesh position={[-0.4, 0.4, -0.8]}>
@@ -203,6 +183,7 @@ function Interactive3DObject({ isMobile }: { isMobile: boolean }) {
 export default function ThreeHeroScene() {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [canvasKey, setCanvasKey] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -211,7 +192,10 @@ export default function ThreeHeroScene() {
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+    };
   }, []);
 
   if (!mounted) {
@@ -224,12 +208,31 @@ export default function ThreeHeroScene() {
   }
 
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+    <div 
+      className="absolute inset-0 w-full h-full pointer-events-none z-0"
+      style={{ transform: "translate3d(0, 0, 0)", willChange: "transform", backfaceVisibility: "hidden" }}
+    >
       <Canvas
+        key={canvasKey}
         camera={{ position: [0, 0, 4.0], fov: 45 }}
-        gl={{ antialias: !isMobile, alpha: true, preserveDrawingBuffer: true }}
+        gl={{ 
+          antialias: !isMobile, 
+          alpha: true, 
+          preserveDrawingBuffer: false,
+          powerPreference: "high-performance"
+        }}
         dpr={isMobile ? [1, 1.5] : [1, 2]}
         className="w-full h-full"
+        style={{ pointerEvents: "none", transform: "translate3d(0, 0, 0)", willChange: "transform" }}
+        onCreated={({ gl }) => {
+          const canvasEl = gl.domElement;
+          const handleContextLost = (event: Event) => {
+            event.preventDefault();
+            console.warn("WebGL Context Lost. Recreating canvas element...");
+            setCanvasKey(prev => prev + 1);
+          };
+          canvasEl.addEventListener("webglcontextlost", handleContextLost, false);
+        }}
       >
         <Suspense fallback={null}>
           <Interactive3DObject isMobile={isMobile} />

@@ -36,14 +36,6 @@ const achievementsData: Achievement[] = [
     date: "2024",
     description: "Secured All India Rank 120 in the MAH-CET postgraduate exam.",
     icon: <ShieldCheck className="w-6 h-6 text-[#9b51e0]" />
-  },
-  {
-    category: "leadership",
-    title: "Campus Ambassador Selection",
-    sub: "Eduveda Academy",
-    date: "2024",
-    description: "Selected to represent the organization, driving tech student engagement and coordinate local webinars.",
-    icon: <Users className="w-6 h-6 text-[#c5a880]" />
   }
 ];
 

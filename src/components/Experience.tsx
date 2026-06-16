@@ -24,17 +24,6 @@ const experienceData: ExperienceItem[] = [
       "Worked with PostgreSQL and DBeaver for data querying, query optimization, validation, and schema inspection."
     ],
     skills: ["Next.js", "React.js", "FastAPI", "PostgreSQL", "DBeaver", "RESTful APIs"]
-  },
-  {
-    role: "Campus Ambassador",
-    company: "Eduveda Academy",
-    period: "August 2024 - September 2024",
-    responsibilities: [
-      "Represented the Academy on campus, introducing educational webinars and workshops to student circles.",
-      "Coordinated campus outreach initiatives and planned digital engagement campaigns.",
-      "Gathered student feedback to suggest curriculum improvements for academy advisors."
-    ],
-    skills: ["Outreach", "Leadership", "Event Planning", "Communication"]
   }
 ];
 

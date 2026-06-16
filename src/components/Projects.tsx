@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, X, Compass, Layers } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
+import { ExternalLink, Github, X, Compass, Layers, FileText } from "lucide-react";
 
 interface Project {
   id: string;
@@ -15,6 +15,7 @@ interface Project {
   live?: string;
   illustration: React.ReactNode;
   highlights: string[];
+  documentation?: string;
 }
 
 const projectsData: Project[] = [
@@ -26,27 +27,26 @@ const projectsData: Project[] = [
     detailedDescription: "EMS Workspace is an enterprise dashboard designed with administrative tools and role-based permissions. Admins have access to operational logs and employee CRUD metrics, while employees can track individual tasks. Built on Node.js/Express and integrated with React.",
     tech: ["React.js", "TailwindCSS", "MongoDB", "Node.js", "REST API", "LocalStorage"],
     github: "https://github.com",
-    live: "https://github.com",
+    live: "https://aviralnitw.github.io/EMS_MASTER/",
     highlights: [
       "Engineered role-based employee management with Admin and Employee access control.",
       "Developed secure authentication and authorization workflows to protect employee data.",
       "Implemented CRUD APIs and integrated them with a responsive React frontend.",
       "Enhanced UX using form validation, error handling, and persistent local storage/SQL principles."
     ],
+    documentation: `1. Requirements Analysis & Database Design:
+Designed the MongoDB database schemas for user credentials, log actions, and role mappings.
+
+2. Backend API Implementation:
+Spun up a Node.js/Express server. Integrated JWT validation middleware and bcrypt hashing for secure session endpoints.
+
+3. Frontend Dashboard Integration:
+Built task tracking interfaces, input validation forms, and state management in React. Styled with responsive TailwindCSS.
+
+4. Log Auditing & Testing:
+Wrote system workflows tracking administrator log modifications and tested end-to-end personnel updates.`,
     illustration: (
-      <svg viewBox="0 0 400 240" className="w-full h-full opacity-70">
-        <rect x="50" y="40" width="300" height="160" rx="12" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
-        <line x1="50" y1="75" x2="350" y2="75" stroke="rgba(255,255,255,0.05)" strokeWidth="1.5" />
-        <line x1="130" y1="75" x2="130" y2="200" stroke="rgba(255,255,255,0.05)" strokeWidth="1.5" />
-        <circle cx="90" cy="105" r="6" fill="#c5a880" opacity="0.8" />
-        <circle cx="90" cy="135" r="6" fill="rgba(255,255,255,0.2)" />
-        <circle cx="90" cy="165" r="6" fill="rgba(255,255,255,0.2)" />
-        <rect x="155" y="95" width="170" height="40" rx="6" fill="none" stroke="#00f2fe" strokeWidth="1" opacity="0.4" />
-        <path d="M 165 125 L 205 110 L 245 120 L 285 105 L 315 115" fill="none" stroke="#00f2fe" strokeWidth="1.5" />
-        <circle cx="315" cy="115" r="3" fill="#ffffff" />
-        <rect x="155" y="150" width="75" height="35" rx="6" fill="none" stroke="#c5a880" strokeWidth="1" opacity="0.4" />
-        <rect x="250" y="150" width="75" height="35" rx="6" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-      </svg>
+      <img src="/ems_logo.png" alt="EMS Logo" className="w-full h-full object-contain p-4 filter brightness-110" />
     )
   },
   {
@@ -57,37 +57,26 @@ const projectsData: Project[] = [
     detailedDescription: "GeoStockLive uses natural language processing (NLP) pipelines to score real-time risk on global locations. Connected via Kafka brokers and WebSockets, it provides interactive geographical visualizations of risk indicators to correlate news and stock trends.",
     tech: ["React.js", "FastAPI", "PostgreSQL", "Apache Kafka", "WebSockets", "NLP"],
     github: "https://github.com",
-    live: "https://github.com",
+    live: "https://geo-stock-live-frontend.vercel.app/",
     highlights: [
       "Built an AI-powered platform analyzing real-time geopolitical news impact on stocks.",
       "Developed scalable NLP pipelines for sentiment analysis and risk scoring.",
       "Implemented real-time updates using Kafka, WebSockets, and FastAPI.",
       "Created interactive dashboards with 3D risk visualization and live alerts."
     ],
+    documentation: `1. Ingestion Infrastructure:
+Configured Apache Kafka clusters queuing streaming global news feeds in parallel.
+
+2. NLP Sentiment Inference:
+Routed raw feeds to transformer scoring nodes, classifying real-time geopolitical risk parameters.
+
+3. Real-Time Websocket Updates:
+Established active WebSocket connections via Python/FastAPI to push live indexes.
+
+4. 3D Visualization:
+Integrated Mapbox GL rendering real-time risk coordinate points on an interactive 3D globe.`,
     illustration: (
-      <svg viewBox="0 0 400 240" className="w-full h-full opacity-70">
-        <defs>
-          <radialGradient id="globe-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#c5a880" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#c5a880" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <circle cx="200" cy="120" r="80" fill="url(#globe-glow)" />
-        <circle cx="200" cy="120" r="70" fill="none" stroke="#c5a880" strokeWidth="1" strokeDasharray="3 3" opacity="0.3" />
-        <ellipse cx="200" cy="120" rx="70" ry="25" fill="none" stroke="#c5a880" strokeWidth="1" opacity="0.4" />
-        <ellipse cx="200" cy="120" rx="70" ry="50" fill="none" stroke="#c5a880" strokeWidth="1" opacity="0.2" />
-        <line x1="200" y1="50" x2="200" y2="190" stroke="#c5a880" strokeWidth="1" opacity="0.3" />
-        <g stroke="#00f2fe" strokeWidth="1.5">
-          <line x1="160" y1="100" x2="230" y2="90" opacity="0.5" />
-          <line x1="230" y1="90" x2="245" y2="135" opacity="0.5" />
-          <line x1="160" y1="100" x2="180" y2="145" opacity="0.5" />
-        </g>
-        <circle cx="160" cy="100" r="4" fill="#00f2fe" className="animate-ping" />
-        <circle cx="230" cy="90" r="4" fill="#c5a880" />
-        <circle cx="245" cy="135" r="4.5" fill="#00f2fe" />
-        <circle cx="180" cy="145" r="4" fill="#9b51e0" />
-        <path d="M 20 220 L 380 220" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-      </svg>
+      <img src="/geostock_logo.png" alt="GeoStockLive Logo" className="w-full h-full object-contain p-4 filter brightness-110" />
     )
   },
   {
@@ -105,28 +94,172 @@ const projectsData: Project[] = [
       "Integrated Firebase Storage & FCM for media handling and push notifications."
     ],
     illustration: (
-      <svg viewBox="0 0 400 240" className="w-full h-full opacity-70">
-        <defs>
-          <linearGradient id="wave-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#9b51e0" stopOpacity="0.6" />
-            <stop offset="50%" stopColor="#00f2fe" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#c5a880" stopOpacity="0.6" />
-          </linearGradient>
-        </defs>
-        <path d="M 50 120 Q 80 80, 110 120 T 170 120 T 230 120 T 290 120 T 350 120" fill="none" stroke="url(#wave-grad)" strokeWidth="2" />
-        <path d="M 50 120 Q 80 150, 110 120 T 170 120 T 230 120 T 290 120 T 350 120" fill="none" stroke="url(#wave-grad)" strokeWidth="1" opacity="0.3" />
-        <g stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="2 4">
-          <circle cx="110" cy="120" r="16" fill="none" />
-          <circle cx="230" cy="120" r="16" fill="none" />
-          <circle cx="290" cy="120" r="16" fill="none" />
-        </g>
-        <circle cx="110" cy="120" r="3.5" fill="#00f2fe" />
-        <circle cx="230" cy="120" r="3.5" fill="#9b51e0" />
-        <circle cx="290" cy="120" r="3.5" fill="#c5a880" />
-      </svg>
+      <img src="/vochat_logo.png" alt="VoChat Logo" className="w-full h-full object-contain p-4 filter brightness-110" />
     )
   }
 ];
+
+function ProjectCard({ project, onClick }: { project: Project; onClick: () => void }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const rotateX = useTransform(y, [-0.5, 0.5], [10, -10]);
+  const rotateY = useTransform(x, [-0.5, 0.5], [-10, 10]);
+  
+  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
+  const rotateXSpring = useSpring(rotateX, springConfig);
+  const rotateYSpring = useSpring(rotateY, springConfig);
+  
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    
+    const relativeX = (e.clientX - rect.left) / rect.width - 0.5;
+    const relativeY = (e.clientY - rect.top) / rect.height - 0.5;
+    
+    x.set(relativeX);
+    y.set(relativeY);
+    
+    const glowX = e.clientX - rect.left;
+    const glowY = e.clientY - rect.top;
+    card.style.setProperty("--glow-x", `${glowX}px`);
+    card.style.setProperty("--glow-y", `${glowY}px`);
+    card.style.setProperty("--glow-opacity", "1");
+  };
+  
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    const card = cardRef.current;
+    if (card) {
+      card.style.setProperty("--glow-opacity", "0");
+    }
+  };
+
+  return (
+    <div className="w-full h-full" style={{ perspective: 1000 }}>
+      <motion.div
+        ref={cardRef}
+        layoutId={`card-container-${project.id}`}
+        onClick={onClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX: rotateXSpring,
+          rotateY: rotateYSpring,
+          transformStyle: "preserve-3d",
+        }}
+        className="glass-card card-shadow-3d rounded-3xl overflow-hidden border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent cursor-pointer flex flex-col h-full group relative transition-all duration-500 hover:border-[#c5a880]/30 hover:shadow-[0_0_50px_rgba(197,168,128,0.03)]"
+      >
+        {/* Glow spotlight background */}
+        <div 
+          className="absolute inset-0 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100 z-0"
+          style={{
+            background: `radial-gradient(280px circle at var(--glow-x, 0px) var(--glow-y, 0px), rgba(197, 168, 128, 0.08), transparent 85%)`
+          }}
+        />
+
+        {/* Image / Vector Illustration Area */}
+        <div 
+          style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }}
+          className="relative aspect-video bg-black/40 border-b border-white/5 flex items-center justify-center overflow-hidden z-20"
+        >
+          <div className="absolute inset-0 bg-[#c5a880]/1 group-hover:bg-[#c5a880]/4 transition-colors duration-500" />
+          
+          <motion.div 
+            className="w-full h-full flex items-center justify-center"
+            style={{ transform: "translateZ(40px)" }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.5 }}
+          >
+            {project.illustration}
+          </motion.div>
+          
+          {/* Tech category header icon */}
+          <div 
+            style={{ transform: "translateZ(30px)" }}
+            className="absolute top-4 left-4 p-2.5 rounded-xl bg-black/60 border border-white/5 text-slate-300 shadow-lg"
+          >
+            <Layers className="w-4 h-4" />
+          </div>
+        </div>
+
+        {/* Card Body */}
+        <div 
+          style={{ transform: "translateZ(10px)", transformStyle: "preserve-3d" }}
+          className="p-6 md:p-8 flex flex-col flex-grow z-20"
+        >
+          <p 
+            style={{ transform: "translateZ(15px)" }}
+            className="text-[10px] text-[#c5a880] uppercase tracking-widest font-bold mb-2"
+          >
+            {project.subtitle}
+          </p>
+          
+          <h3 
+            style={{ transform: "translateZ(25px)" }}
+            className="text-xl font-bold text-white tracking-wide mb-3 group-hover:text-[#c5a880] transition-colors duration-300"
+          >
+            {project.title}
+          </h3>
+          
+          <p 
+            style={{ transform: "translateZ(15px)" }}
+            className="text-sm text-slate-400 leading-relaxed mb-6 flex-grow font-medium"
+          >
+            {project.description}
+          </p>
+
+          {/* Tech Pills */}
+          <div 
+            style={{ transform: "translateZ(20px)" }}
+            className="flex flex-wrap gap-2 mb-6"
+          >
+            {project.tech.slice(0, 3).map((t) => (
+              <span
+                key={t}
+                className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-medium tracking-wider hover:bg-[#c5a880]/10 hover:text-white transition-colors duration-300"
+              >
+                {t}
+              </span>
+            ))}
+            {project.tech.length > 3 && (
+              <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/5 text-[10px] text-[#c5a880] font-bold">
+                +{project.tech.length - 3} More
+              </span>
+            )}
+          </div>
+
+          {/* Action footer link hint & Live Link Button */}
+          <div 
+            style={{ transform: "translateZ(25px)" }}
+            className="flex items-center justify-between mt-auto pt-2"
+          >
+            <div className="flex items-center gap-1.5 text-xs text-[#c5a880] font-bold uppercase tracking-widest group-hover:text-white transition-colors duration-300">
+              Reveal Specs
+              <span className="group-hover:translate-x-1.5 transition-transform duration-300">→</span>
+            </div>
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:border-[#c5a880]/30 hover:bg-[#c5a880] hover:text-[#030306] text-[#c5a880] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-wider shadow-lg hover:shadow-[#c5a880]/10"
+              >
+                <ExternalLink className="w-3 h-3" />
+                Live
+              </a>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -158,66 +291,11 @@ export default function Projects() {
         {/* Project Card Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projectsData.map((project) => (
-            <motion.div
+            <ProjectCard
               key={project.id}
-              layoutId={`card-container-${project.id}`}
+              project={project}
               onClick={() => setSelectedProject(project)}
-              whileHover={{ y: -8 }}
-              className="glass-card card-shadow-3d rounded-3xl overflow-hidden border border-white/5 bg-gradient-to-b from-white/[0.01] to-transparent cursor-pointer flex flex-col h-full group"
-            >
-              {/* Image / Vector Illustration Area */}
-              <div className="relative aspect-video bg-black/40 border-b border-white/5 flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-[#c5a880]/1 group-hover:bg-[#c5a880]/5 transition-colors duration-500" />
-                <motion.div 
-                  className="w-full h-full flex items-center justify-center"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {project.illustration}
-                </motion.div>
-                
-                {/* Tech category header icon */}
-                <div className="absolute top-4 left-4 p-2.5 rounded-xl bg-black/60 border border-white/5 text-slate-300">
-                  <Layers className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-6 md:p-8 flex flex-col flex-grow">
-                <p className="text-[10px] text-[#c5a880] uppercase tracking-widest font-bold mb-2">
-                  {project.subtitle}
-                </p>
-                <h3 className="text-xl font-bold text-white tracking-wide mb-3 group-hover:text-[#c5a880] transition-colors duration-300">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-6 flex-grow">
-                  {project.description}
-                </p>
-
-                {/* Tech Pills */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.slice(0, 3).map((t) => (
-                    <span
-                      key={t}
-                      className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-medium tracking-wider"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                  {project.tech.length > 3 && (
-                    <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/5 text-[10px] text-[#c5a880] font-bold">
-                      +{project.tech.length - 3} More
-                    </span>
-                  )}
-                </div>
-
-                {/* Action footer link hint */}
-                <div className="flex items-center gap-1.5 text-xs text-[#c5a880] font-bold uppercase tracking-widest">
-                  Reveal Specs
-                  <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
-                </div>
-              </div>
-            </motion.div>
+            />
           ))}
         </div>
 
@@ -287,6 +365,23 @@ export default function Projects() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+
+                  {/* Documentation / Development Walkthrough */}
+                  <div className="space-y-4 mb-8">
+                    <h4 className="text-xs uppercase tracking-widest font-bold text-[#c5a880] flex items-center gap-1.5">
+                      <FileText className="w-4 h-4" />
+                      Development Walkthrough
+                    </h4>
+                    {selectedProject.documentation ? (
+                      <div className="text-sm text-slate-400 leading-relaxed space-y-3 whitespace-pre-line p-5 rounded-2xl bg-white/[0.01] border border-white/5 font-sans">
+                        {selectedProject.documentation}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-slate-500 italic p-5 rounded-2xl bg-white/[0.01] border border-white/5 border-dashed">
+                        Development case study and system architecture documentation are currently being drafted. A complete step-by-step guide detailing the creation of this project will be available here soon!
+                      </div>
+                    )}
                   </div>
 
                   {/* Complete Tech stack pills */}

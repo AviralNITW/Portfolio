@@ -43,6 +43,7 @@ const skillCategories: SkillCategory[] = [
       { name: "Node.js", level: "Proficient", percent: 85 },
       { name: "MongoDB", level: "Proficient", percent: 85 },
       { name: "PostgreSQL", level: "Proficient", percent: 85 },
+      { name: "Redis", level: "Proficient", percent: 80 },
       { name: "MySQL", level: "Intermediate", percent: 75 },
       { name: "RESTful APIs", level: "Advanced", percent: 90 }
     ]
@@ -53,7 +54,10 @@ const skillCategories: SkillCategory[] = [
     skills: [
       { name: "Git & GitHub", level: "Advanced", percent: 90 },
       { name: "Linux (System Calls)", level: "Proficient", percent: 80 },
-      { name: "VS Code", level: "Advanced", percent: 95 },
+      { name: "Docker", level: "Proficient", percent: 85 },
+      { name: "Kubernetes", level: "Intermediate", percent: 75 },
+      { name: "Vercel", level: "Advanced", percent: 90 },
+      { name: "Postman", level: "Advanced", percent: 90 },
       { name: "Render", level: "Proficient", percent: 85 },
       { name: "Redux", level: "Proficient", percent: 80 }
     ]

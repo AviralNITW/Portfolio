@@ -21,9 +21,9 @@ const profilesData: CodingProfile[] = [
     accentColor: "#ffa116",
     glowClass: "shadow-[#ffa116]/5 border-[#ffa116]/20 hover:border-[#ffa116]/50",
     stats: [
-      { label: "Problems Solved", value: "450+" },
-      { label: "Global Ranking", value: "Top 8%" },
-      { label: "Max Streak", value: "120 Days" }
+      { label: "Problems Solved", value: "586" },
+      { label: "Contest Rating", value: "1,666" },
+      { label: "Max Streak", value: "79 Days" }
     ],
     icon: <Code2 className="w-6 h-6 text-[#ffa116]" />
   },
@@ -34,37 +34,24 @@ const profilesData: CodingProfile[] = [
     accentColor: "#ffffff",
     glowClass: "shadow-white/5 border-white/10 hover:border-white/40",
     stats: [
-      { label: "Repositories", value: "24" },
-      { label: "Year Contributions", value: "850+" },
-      { label: "Pull Requests", value: "84" }
+      { label: "Public Repositories", value: "4" },
+      { label: "Pinned Projects", value: "4" },
+      { label: "Contributions (YTD)", value: "35+" }
     ],
     icon: <Github className="w-6 h-6 text-white" />
   },
   {
     platform: "CodeChef",
-    handle: "codechef.com/users/aviralmishra756",
-    url: "https://codechef.com/users/aviralmishra756",
+    handle: "codechef.com/users/aviralnitw",
+    url: "https://www.codechef.com/users/aviralnitw",
     accentColor: "#9b7653",
     glowClass: "shadow-[#9b7653]/5 border-[#9b7653]/20 hover:border-[#9b7653]/50",
     stats: [
-      { label: "Max Rating", value: "1680 (3★)" },
-      { label: "Global Rank", value: "4,200" },
+      { label: "Max Rating", value: "1769 (3★)" },
+      { label: "Global Rank", value: "5,626" },
       { label: "Division", value: "Div 2" }
     ],
     icon: <Award className="w-6 h-6 text-[#9b7653]" />
-  },
-  {
-    platform: "Codeforces",
-    handle: "codeforces.com/profile/aviralmishra756",
-    url: "https://codeforces.com/profile/aviralmishra756",
-    accentColor: "#3182ce",
-    glowClass: "shadow-[#3182ce]/5 border-[#3182ce]/20 hover:border-[#3182ce]/50",
-    stats: [
-      { label: "Max Rating", value: "1320 (Pupil)" },
-      { label: "Contests Solved", value: "34" },
-      { label: "Problem Rating Peak", value: "1450" }
-    ],
-    icon: <Star className="w-6 h-6 text-[#3182ce]" />
   },
   {
     platform: "LinkedIn",
@@ -74,8 +61,8 @@ const profilesData: CodingProfile[] = [
     glowClass: "shadow-[#0077b5]/5 border-[#0077b5]/20 hover:border-[#0077b5]/50",
     stats: [
       { label: "Connections", value: "500+" },
-      { label: "Profile Views", value: "Top 8%" },
-      { label: "Content Engagements", value: "Top 12%" }
+      { label: "Profile Status", value: "Active" },
+      { label: "Network", value: "Growing" }
     ],
     icon: <Linkedin className="w-6 h-6 text-[#0077b5]" />
   }
@@ -106,7 +93,7 @@ export default function Profiles() {
         </div>
 
         {/* Profiles Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {profilesData.map((profile, idx) => (
             <a
               key={idx}
