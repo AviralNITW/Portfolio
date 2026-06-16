@@ -184,7 +184,7 @@ export default function Hero() {
                 </a>
                 
                 <a
-                  href="/Aviral_Resume.pdf"
+                  href="/Portfolio_resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-8 py-4 rounded-full bg-transparent border border-white/10 hover:border-white/20 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-white/[0.03] hover:scale-[1.03] transition-all duration-300"
