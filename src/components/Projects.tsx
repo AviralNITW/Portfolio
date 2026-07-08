@@ -27,7 +27,7 @@ const projectsData: Project[] = [
     detailedDescription: "EMS Workspace is an enterprise dashboard designed with administrative tools and role-based permissions. Admins have access to operational logs and employee CRUD metrics, while employees can track individual tasks. Built on Node.js/Express and integrated with React.",
     tech: ["React.js", "TailwindCSS", "MongoDB", "Node.js", "REST API", "LocalStorage"],
     github: "https://github.com",
-    live: "https://aviralnitw.github.io/EMS_MASTER/",
+    live: "https://ems-master.vercel.app/",
     highlights: [
       "Engineered role-based employee management with Admin and Employee access control.",
       "Developed secure authentication and authorization workflows to protect employee data.",
