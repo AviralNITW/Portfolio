@@ -7,16 +7,33 @@ const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",   // Prevent FOIT — show fallback font while loading
+  preload: true,
 });
 
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",   // Prevent FOIT
+  preload: true,
 });
 
 export const metadata: Metadata = {
   title: "Aviral Mishra | Portfolio",
-  description: "AI Full-Stack Developer & MCA @ NIT Warangal. Crafting premium, performance-focused digital products and web architectures.",
+  description:
+    "AI Full-Stack Developer & MCA @ NIT Warangal. Crafting premium, performance-focused digital products and web architectures.",
+  keywords: ["Aviral Mishra", "Portfolio", "Full Stack Developer", "NIT Warangal", "MCA", "React", "Next.js"],
+  authors: [{ name: "Aviral Mishra" }],
+  openGraph: {
+    type: "website",
+    title: "Aviral Mishra | Portfolio",
+    description: "AI Full-Stack Developer & MCA @ NIT Warangal.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
 };
 
 export default function RootLayout({
