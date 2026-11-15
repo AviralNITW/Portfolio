@@ -3,27 +3,17 @@
 import React from "react";
 import { motion, Variants } from "framer-motion";
 import {
-  MapPin,
-  GraduationCap,
   Code2,
   Layers,
   Zap,
   ArrowRight,
   FileText,
   Trophy,
-  Briefcase,
+  GraduationCap,
   Brain,
-  University,
-  Award,
-  BookOpen,
-  Cpu,
+  Briefcase,
+  MapPin,
 } from "lucide-react";
-
-const _cachedAboutIcons = [
-  MapPin, GraduationCap, Code2, Layers, Zap, ArrowRight,
-  FileText, Trophy, Briefcase, Brain, University, Award, BookOpen, Cpu
-];
-void _cachedAboutIcons;
 
 const stats = [
   { value: "600+", label: "LeetCode Solved", sub: "1666+ Rating (3★)", icon: <Code2 className="w-4 h-4 text-amber-400" /> },
@@ -35,24 +25,28 @@ const stats = [
 const whatIDo = [
   {
     number: "01",
+    domain: "RETRIEVAL SYSTEMS",
     title: "High-Precision Hybrid RAG & Vector Retrieval",
     description:
       "Designing multi-stage retrieval architectures combining dense vector spaces (MMR with ChromaDB) and sparse lexical matching (BM25) fused through Reciprocal Rank Fusion (k=60) and cross-encoder re-ranking.",
   },
   {
     number: "02",
+    domain: "EVENT STREAMING",
     title: "Event-Driven Distributed Streaming",
     description:
       "Building high-throughput telemetry pipelines using Apache Kafka brokers with partition-key routing, parallel NLP workers, PostgreSQL conflict UPSERTs, and real-time WebSocket client fanout.",
   },
   {
     number: "03",
+    domain: "VECTOR INFERENCE",
     title: "Sub-5ms Serverless Vector Inference",
     description:
       "Deploying mathematical models without bulky runtime dependencies — such as compressing linear SVM hyperplane weights into pure vectorized NumPy dot-products executed in 3.4ms on zero-GPU serverless.",
   },
   {
     number: "04",
+    domain: "DATA LAKEHOUSES",
     title: "Distributed Data Lakehouses & Concurrency",
     description:
       "Configuring containerized PySpark master-worker topologies, Hadoop HDFS, Delta Lake ACID transactions, and robust schema enforcement for analytical data marts.",
@@ -278,7 +272,7 @@ export default function About() {
                 className="p-6 rounded-2xl bg-[#09090e] border border-white/[0.06] hover:border-cyan-500/30 transition-all duration-300"
               >
                 <span className="text-[10px] font-mono font-bold text-cyan-400/70 tracking-[0.25em] uppercase mb-2 block">
-                  {item.number} // ARCHITECTURE
+                  {item.number} // {item.domain}
                 </span>
                 <h4 className="text-base font-bold text-white mb-2 tracking-tight">
                   {item.title}

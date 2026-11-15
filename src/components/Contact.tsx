@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Linkedin, Github, Send, CheckCircle2, Terminal } from "lucide-react";
+import { Mail, Linkedin, Github, Send, CheckCircle2 } from "lucide-react";
 
 export default function Contact() {
   const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" });

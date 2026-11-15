@@ -24,7 +24,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
       type: "system",
       content: (
         <div className="space-y-1">
-          <p className="text-[cyan-400] font-bold">AVIRAL MISHRA [NIT WARANGAL] — SHELL v2.4.0</p>
+          <p className="text-cyan-400 font-bold">AVIRAL MISHRA [NIT WARANGAL] — SHELL v2.4.0</p>
           <p className="text-slate-400 text-xs">
             Type <span className="text-emerald-400 font-bold">&apos;help&apos;</span> to view all commands, or ask questions like <span className="text-cyan-400 font-bold">&apos;ragi&apos;</span>, <span className="text-amber-400 font-bold">&apos;sentinel&apos;</span>, <span className="text-purple-400 font-bold">&apos;why-hire&apos;</span>.
           </p>
@@ -69,7 +69,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
           type: "output",
           content: (
             <div className="space-y-2 text-xs">
-              <p className="text-[cyan-400] font-bold">Available Commands:</p>
+              <p className="text-cyan-400 font-bold">Available Commands:</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-slate-300 font-mono">
                 <div><span className="text-emerald-400 font-bold">whoami</span> — Executive bio</div>
                 <div><span className="text-emerald-400 font-bold">projects</span> — Featured systems</div>
@@ -161,7 +161,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
           type: "output",
           content: (
             <div className="space-y-2 text-xs text-slate-300">
-              <p className="text-[cyan-400] font-bold">Featured Production Systems:</p>
+              <p className="text-cyan-400 font-bold">Featured Production Systems:</p>
               <p>1. <span className="text-cyan-400 font-bold">RAGI</span> — Enterprise Hybrid RAG Search (BM25 + ChromaDB + BGE + Groq)</p>
               <p>2. <span className="text-amber-400 font-bold">SENTINEL</span> — Deceptive Review Classifier (&lt;5ms NumPy SVM on Vercel)</p>
               <p>3. <span className="text-purple-400 font-bold">GeoStockLive</span> — Real-Time Kafka &amp; WebSocket Market Risk Engine</p>
@@ -177,7 +177,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
           type: "output",
           content: (
             <div className="space-y-2 text-xs text-slate-300">
-              <p className="text-[cyan-400] font-bold">Core Technical Stack:</p>
+              <p className="text-cyan-400 font-bold">Core Technical Stack:</p>
               <p>🧠 <span className="text-white font-bold">AI &amp; NLP:</span> RAG, LangChain, ChromaDB, Sentence-Transformers, BGE Cross-Encoder, Word2Vec, spaCy, Scikit-learn</p>
               <p>⚡ <span className="text-white font-bold">Distributed:</span> Apache Kafka, PySpark, WebSockets, Docker, Delta Lake, FastAPI, REST</p>
               <p>💻 <span className="text-white font-bold">Languages:</span> C++, Python, JavaScript, TypeScript, SQL</p>
@@ -194,7 +194,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
           type: "output",
           content: (
             <div className="space-y-1.5 text-xs text-slate-300">
-              <p className="text-[cyan-400] font-bold">Competitive Ranks &amp; Metrics:</p>
+              <p className="text-cyan-400 font-bold">Competitive Ranks &amp; Metrics:</p>
               <p>• 🏆 NIMCET 2024: AIR-246 (Top 1% nationwide out of 25,000+ candidates)</p>
               <p>• 🥇 CUET PG 2024: AIR-51 Nationwide</p>
               <p>• 🎖️ MAH-CET 2024: AIR-120</p>
@@ -210,7 +210,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
           type: "output",
           content: (
             <div className="space-y-1.5 text-xs text-slate-300">
-              <p className="text-[cyan-400] font-bold">NeuraMach.AI (Dec 2025 – Mar 2026)</p>
+              <p className="text-cyan-400 font-bold">NeuraMach.AI (Dec 2025 – Mar 2026)</p>
               <p className="text-white">Role: AI Full Stack Engineering Intern</p>
               <p>• Built interactive Knowledge Concept Graphs &amp; evaluation dashboards using Next.js &amp; React.</p>
               <p>• Engineered modular REST APIs with FastAPI and conducted unit testing with RCA debugging.</p>
@@ -240,7 +240,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
           type: "output",
           content: (
             <div className="space-y-1.5 text-xs text-slate-300">
-              <p className="text-[cyan-400] font-bold">Contact Channels:</p>
+              <p className="text-cyan-400 font-bold">Contact Channels:</p>
               <p>✉️ Email: aviralmishra756@gmail.com</p>
               <p>📞 Phone: +91-9511057965</p>
               <p>🌐 GitHub: https://github.com/AviralNITW</p>
@@ -334,7 +334,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
                   />
                 </div>
                 <div className="flex items-center gap-2 ml-3 text-xs text-slate-400">
-                  <TerminalIcon className="w-3.5 h-3.5 text-[cyan-400]" />
+                  <TerminalIcon className="w-3.5 h-3.5 text-cyan-400" />
                   <span>aviral@nitw-gateway:~</span>
                 </div>
               </div>
@@ -393,7 +393,7 @@ export default function InteractiveTerminal({ isOpen, onClose }: InteractiveTerm
               />
               <button
                 onClick={() => handleCommand(inputVal)}
-                className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-[cyan-400] text-slate-400 hover:text-black transition-colors"
+                className="p-1.5 rounded-lg bg-white/[0.04] hover:bg-cyan-500 text-slate-400 hover:text-black transition-colors"
               >
                 <CornerDownLeft className="w-3.5 h-3.5" />
               </button>

@@ -12,7 +12,7 @@ interface SectionPoint {
   y: number;
 }
 
-const sectionIds = ["home", "about", "education", "skills", "projects", "experience", "achievements", "profiles", "contact"];
+const sectionIds = ["home", "projects", "skills", "experience", "about", "education", "achievements", "profiles", "contact"];
 
 export default function ScrollPathTracker() {
   const pathRef = useRef<SVGPathElement>(null);
@@ -189,17 +189,17 @@ export default function ScrollPathTracker() {
     <div className="absolute inset-0 w-full pointer-events-none z-10" style={{ height: "100%" }}>
       <svg className="scroll-path-svg">
         <defs>
-          {/* Luxury gold gradient for path and light */}
-          <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          {/* Obsidian cyan-emerald gradient for path stream */}
+          <linearGradient id="stream-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
-            <stop offset="50%" stopColor="#c5a880" stopOpacity="1" />
-            <stop offset="100%" stopColor="#e6d3ba" stopOpacity="0.4" />
+            <stop offset="50%" stopColor="#06b6d4" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.5" />
           </linearGradient>
           <radialGradient id="ball-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#e6d3ba" stopOpacity="1" />
-            <stop offset="25%" stopColor="#c5a880" stopOpacity="0.8" />
-            <stop offset="60%" stopColor="#c5a880" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="#c5a880" stopOpacity="0" />
+            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.9" />
+            <stop offset="30%" stopColor="#06b6d4" stopOpacity="0.5" />
+            <stop offset="70%" stopColor="#06b6d4" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
           </radialGradient>
         </defs>
 
@@ -214,6 +214,7 @@ export default function ScrollPathTracker() {
         <path
           ref={glowPathRef}
           d={pathD}
+          stroke="url(#stream-gradient)"
           className="scroll-path-glow-line"
         />
 

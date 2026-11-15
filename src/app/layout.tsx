@@ -15,6 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://portfolio-nitw.vercel.app"),
   title: "Aviral Mishra | Distributed Systems & Applied AI Engineer",
   description:
     "Portfolio of Aviral Mishra — MCA @ NIT Warangal. Architecting low-latency hybrid RAG, high-throughput distributed event streaming, and sub-4ms serverless vector inference.",
@@ -30,11 +31,26 @@ export const metadata: Metadata = {
     "Next.js",
     "Full Stack Engineer"
   ],
-  authors: [{ name: "Aviral Mishra" }],
+  authors: [{ name: "Aviral Mishra", url: "https://github.com/AviralNITW" }],
+  creator: "Aviral Mishra",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     type: "website",
+    locale: "en_US",
+    url: "https://portfolio-nitw.vercel.app",
+    siteName: "Aviral Mishra Portfolio",
     title: "Aviral Mishra | Distributed Systems & Applied AI Engineer",
     description: "Architecting low-latency hybrid RAG, distributed event streaming, and sub-4ms vector inference.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aviral Mishra | Distributed Systems & Applied AI Engineer",
+    description: "Architecting low-latency hybrid RAG, distributed event streaming, and sub-4ms vector inference.",
+    creator: "@AviralNITW",
   },
   robots: {
     index: true,

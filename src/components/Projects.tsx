@@ -1,38 +1,17 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
-
-// Maintain compatibility with cached client chunk module factories
-const _cachedMotionHooks = [useMotionValue, useTransform, useSpring];
-void _cachedMotionHooks;
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ExternalLink,
   Github,
   X,
-  Compass,
-  Layers,
-  FileText,
   Cpu,
   Network,
-  Sparkles,
-  Activity,
   Terminal as TerminalIcon,
-  Play,
-  RotateCcw,
   CheckCircle2,
   AlertTriangle,
-  ArrowRight,
-  Database
 } from "lucide-react";
-
-// Retain module factories for all imported icons so HMR/stale client chunks never crash
-const _allProjectIcons = [
-  ExternalLink, Github, X, Compass, Layers, FileText, Cpu, Network,
-  Sparkles, Activity, TerminalIcon, Play, RotateCcw, CheckCircle2,
-  AlertTriangle, ArrowRight, Database
-];
-void _allProjectIcons;
 
 export type ProjectCategory = "all" | "ai" | "distributed" | "fullstack";
 

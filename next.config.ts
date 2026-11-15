@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // React Compiler for automatic memoization
-  reactCompiler: true,
+  // React Compiler
+  reactCompiler: false,
 
   // Experimental: keep empty — optimizePackageImports was causing Turbopack
   // "module factory not available" errors for lucide-react and other icon libs.

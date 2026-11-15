@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import { Brain, Network, Code, Database, Layout, CheckCircle2, BookOpen, Shield, Settings } from "lucide-react";
-
-// Maintain backwards compatibility with cached icon chunk factories
-const _cachedIcons = [Brain, Network, Code, Database, Layout, CheckCircle2, BookOpen, Shield, Settings];
-void _cachedIcons;
+import { Brain, Network, Code, Database, Layout, CheckCircle2 } from "lucide-react";
 
 interface Capability {
   name: string;

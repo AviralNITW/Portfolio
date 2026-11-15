@@ -3,19 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Brain,
-  Network,
-  Cpu,
-  Layers,
-  Zap,
-  Activity,
-  CheckCircle2,
   Play,
-  RotateCw,
   Terminal,
-  ArrowRight,
-  ShieldCheck,
-  Database
 } from "lucide-react";
 
 type PipelineMode = "rag" | "sentinel" | "kafka";
