@@ -13,25 +13,25 @@ interface EducationItem {
 
 const educationData: EducationItem[] = [
   {
-    degree: "Master of Computer Applications (MCA)",
+    degree: "Master of Computer Applications (MCA) · CGPA: 7.80",
     institution: "National Institute of Technology, Warangal (NIT Warangal)",
     year: "2024 - 2027",
     location: "Warangal, India",
     achievements: [
-      "Specializing in Computer Science and Software Systems",
-      "Consolidating advanced computer application architectures, database systems, and algorithms",
-      "Engaged in building interactive, high-fidelity full-stack web applications"
+      "Department of Computer Science and Engineering",
+      "Specializing in Advanced Database Systems, Concurrency, and Distributed Computing",
+      "Active competitive programmer and systems developer"
     ]
   },
   {
-    degree: "Bachelor's Degree (CS Focus)",
-    institution: "Chhatrapati Shahu Ji Maharaj University",
+    degree: "B.Sc. in Computer Applications · 62.61%",
+    institution: "Brahmanand College (Affiliated to CSJM University)",
     year: "2020 - 2023",
     location: "Kanpur, India",
     achievements: [
-      "Completed degree program in Computer Science fundamentals",
-      "Built a solid understanding of object-oriented programming, data structures, and databases",
-      "Participated in local college programming contests and built initial web tools"
+      "Core coursework in Data Structures, Object-Oriented Programming, and DBMS",
+      "Built early web tools and participated in regional programming challenges",
+      "Graduated with top percentile in CS entrance exams nationwide"
     ]
   }
 ];
@@ -40,91 +40,87 @@ export default function Education() {
   return (
     <section
       id="education"
-      className="relative min-h-screen w-full flex items-center justify-center py-24 bg-[#030306] overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center py-24 bg-[#050507] overflow-hidden"
     >
-      {/* Background Soft Glow */}
-      <div className="radial-glow radial-glow-gold w-[30vw] h-[30vw] top-[20%] left-[10%] z-0" />
+      {/* Background Precision Grid & Halo */}
+      <div className="absolute inset-0 linear-dot-grid opacity-20 pointer-events-none z-0" />
+      <div className="absolute top-1/3 right-10 w-[500px] h-[350px] bg-purple-500/[0.03] blur-[150px] pointer-events-none rounded-full z-0" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10 space-y-16">
         
         {/* Section Heading */}
-        <div className="mb-20 text-left">
-          <div data-path-trigger className="inline-flex items-center gap-2 mb-4">
-            <span className="w-8 h-[1px] bg-[#c5a880]" />
-            <span className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] text-[#c5a880]">
-              Academic History
+        <div className="text-left border-b border-white/[0.06] pb-8">
+          <div data-path-trigger className="inline-flex items-center gap-2 mb-3">
+            <span className="w-8 h-[1px] bg-cyan-400" />
+            <span className="text-[10px] md:text-xs font-mono font-semibold uppercase tracking-[0.25em] text-cyan-400">
+              Academic Background
             </span>
           </div>
-          <h2 data-reveal className="text-3xl sm:text-5xl font-bold tracking-tight text-white font-sans">
-            EDUCATION <span className="gold-glow-text font-sans">TIMELINE</span>
+          <h2 data-reveal className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-sans">
+            EDUCATION <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent font-sans">TIMELINE</span>
           </h2>
+          <p className="text-sm text-zinc-400 max-w-xl font-normal mt-2">
+            Formal computer science training, algorithmic foundations, and distributed systems curriculum.
+          </p>
         </div>
 
         {/* Timeline Layout */}
-        <div className="relative border-l border-white/5 ml-4 md:ml-12 space-y-16 py-4">
-          
+        <div className="relative border-l border-white/[0.08] ml-3 md:ml-8 space-y-12">
           {educationData.map((item, index) => (
-            <div key={index} className="relative pl-8 md:pl-16 group">
+            <div key={index} className="relative pl-6 md:pl-10 group">
               
-              {/* Glowing Timeline Node */}
-              <div className="absolute -left-[9px] top-1.5 w-4.5 h-4.5 rounded-full bg-[#030306] border-2 border-[#c5a880] flex items-center justify-center transition-all duration-300 group-hover:scale-125 group-hover:border-white">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#c5a880] group-hover:bg-white" />
+              {/* Timeline Node */}
+              <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-[#050507] border-2 border-cyan-400 flex items-center justify-center transition-all duration-300 group-hover:scale-125">
+                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
               </div>
 
-              {/* Glowing vertical connector highlight on hover */}
-              <div className="absolute left-[-1px] top-6 bottom-[-64px] w-[1px] bg-gradient-to-b from-[#c5a880]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-              {/* Education Card */}
+              {/* Education Bento Card */}
               <div
                 data-reveal
-                className="glass-card card-shadow-3d rounded-3xl p-6 md:p-8 border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent max-w-4xl"
+                className="obsidian-card rounded-3xl p-6 md:p-8 border border-white/[0.08] bg-[#09090e] max-w-4xl space-y-5"
               >
                 {/* Card Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.04] pb-5">
                   <div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-wide group-hover:text-[#c5a880] transition-colors duration-300">
+                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-wide">
                       {item.degree}
                     </h3>
-                    <p className="text-sm text-slate-300 font-semibold mt-1 flex items-center gap-1.5">
-                      <GraduationCap className="w-4 h-4 text-[#c5a880]" />
-                      {item.institution}
+                    <p className="text-xs md:text-sm text-zinc-300 font-mono font-medium mt-1.5 flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4 text-cyan-400" />
+                      <span>{item.institution}</span>
                     </p>
                   </div>
                   
                   {/* Timeline Badge */}
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/5 text-xs text-slate-300 font-semibold flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-[#c5a880]" />
-                      {item.year}
+                  <div className="flex flex-wrap items-center gap-2 font-mono">
+                    <span className="px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/5 text-xs text-zinc-300 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{item.year}</span>
+                    </span>
+                    <span className="px-3 py-1.5 rounded-full bg-white/[0.02] border border-white/5 text-[11px] text-zinc-400 flex items-center gap-1.5">
+                      <MapPin className="w-3 h-3 text-zinc-500" />
+                      <span>{item.location}</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-6">
-                  <MapPin className="w-3.5 h-3.5" />
-                  {item.location}
-                </div>
-
                 {/* Achievements List */}
-                <div className="space-y-3">
-                  <h4 className="text-xs uppercase tracking-widest font-bold text-[#c5a880] flex items-center gap-1.5">
-                    <Award className="w-3.5 h-3.5" />
-                    Key Details
-                  </h4>
-                  <ul className="list-none space-y-2.5">
+                <div className="space-y-2.5">
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest block">
+                    Curriculum &amp; Department Honors
+                  </span>
+                  <ul className="space-y-2">
                     {item.achievements.map((achievement, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-sm text-slate-400 leading-relaxed">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#c5a880] mt-2 shrink-0" />
-                        {achievement}
+                      <li key={idx} className="flex items-start gap-2.5 text-xs md:text-sm text-zinc-400 leading-relaxed font-sans">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 shrink-0" />
+                        <span>{achievement}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
-
               </div>
             </div>
           ))}
-
         </div>
       </div>
     </section>

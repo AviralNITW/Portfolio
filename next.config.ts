@@ -4,11 +4,10 @@ const nextConfig: NextConfig = {
   // React Compiler for automatic memoization
   reactCompiler: true,
 
-  // Enable experimental features for performance
-  experimental: {
-    // Optimize client components bundling
-    optimizePackageImports: ['lucide-react', 'framer-motion', '@react-three/drei', '@react-three/fiber'],
-  },
+  // Experimental: keep empty — optimizePackageImports was causing Turbopack
+  // "module factory not available" errors for lucide-react and other icon libs.
+  // Turbopack handles tree-shaking natively; no manual hints needed.
+  experimental: {},
 
   // Image optimization
   images: {
@@ -27,6 +26,29 @@ const nextConfig: NextConfig = {
 
   // Headers for caching static assets
   async headers() {
+    // In development mode, prevent aggressive chunk caching so hot-reloads stay fresh
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/:path*',
+          headers: [
+            {
+              key: 'Cache-Control',
+              value: 'no-cache, no-store, max-age=0, must-revalidate',
+            },
+            {
+              key: 'Pragma',
+              value: 'no-cache',
+            },
+            {
+              key: 'Expires',
+              value: '0',
+            },
+          ],
+        },
+      ];
+    }
+
     return [
       {
         source: '/(.*)',
@@ -42,8 +64,8 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Cache static assets for 1 year
-        source: '/(.*)\\.(js|css|png|jpg|jpeg|svg|ico|woff|woff2)',
+        // Cache static assets (images, fonts) for 1 year in production
+        source: '/(.*)\\.(png|jpg|jpeg|svg|ico|woff|woff2)',
         headers: [
           {
             key: 'Cache-Control',

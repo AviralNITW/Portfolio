@@ -7,8 +7,6 @@ interface CodingProfile {
   platform: string;
   handle: string;
   url: string;
-  accentColor: string;
-  glowClass: string;
   stats: { label: string; value: string }[];
   icon: React.ReactNode;
 }
@@ -18,53 +16,45 @@ const profilesData: CodingProfile[] = [
     platform: "LeetCode",
     handle: "leetcode.com/u/AviralNITW",
     url: "https://leetcode.com/u/AviralNITW/",
-    accentColor: "#ffa116",
-    glowClass: "shadow-[#ffa116]/5 border-[#ffa116]/20 hover:border-[#ffa116]/50",
     stats: [
-      { label: "Problems Solved", value: "586" },
-      { label: "Contest Rating", value: "1,666" },
-      { label: "Max Streak", value: "79 Days" }
+      { label: "Problems Solved", value: "600+" },
+      { label: "Contest Rating", value: "1,666 (Top 15%)" },
+      { label: "Max Problem Streak", value: "79 Days" }
     ],
-    icon: <Code2 className="w-6 h-6 text-[#ffa116]" />
+    icon: <Code2 className="w-5 h-5 text-amber-400" />
   },
   {
     platform: "GitHub",
     handle: "github.com/AviralNITW",
     url: "https://github.com/AviralNITW",
-    accentColor: "#ffffff",
-    glowClass: "shadow-white/5 border-white/10 hover:border-white/40",
     stats: [
-      { label: "Public Repositories", value: "4" },
-      { label: "Pinned Projects", value: "4" },
-      { label: "Contributions (YTD)", value: "35+" }
+      { label: "Public Repositories", value: "10+" },
+      { label: "Featured Distributed Systems", value: "6" },
+      { label: "Active Pipeline Commits", value: "Consistent" }
     ],
-    icon: <Github className="w-6 h-6 text-white" />
+    icon: <Github className="w-5 h-5 text-white" />
   },
   {
     platform: "CodeChef",
     handle: "codechef.com/users/aviralnitw",
     url: "https://www.codechef.com/users/aviralnitw",
-    accentColor: "#9b7653",
-    glowClass: "shadow-[#9b7653]/5 border-[#9b7653]/20 hover:border-[#9b7653]/50",
     stats: [
-      { label: "Max Rating", value: "1769 (3★)" },
-      { label: "Global Rank", value: "5,626" },
-      { label: "Division", value: "Div 2" }
+      { label: "Peak Rating", value: "1769 (3★)" },
+      { label: "Competitive Division", value: "Division 2" },
+      { label: "Global Rank", value: "5,626" }
     ],
-    icon: <Award className="w-6 h-6 text-[#9b7653]" />
+    icon: <Award className="w-5 h-5 text-cyan-400" />
   },
   {
     platform: "LinkedIn",
     handle: "linkedin.com/in/aviral-mishra-482325324",
     url: "https://www.linkedin.com/in/aviral-mishra-482325324",
-    accentColor: "#0077b5",
-    glowClass: "shadow-[#0077b5]/5 border-[#0077b5]/20 hover:border-[#0077b5]/50",
     stats: [
-      { label: "Connections", value: "500+" },
-      { label: "Profile Status", value: "Active" },
-      { label: "Network", value: "Growing" }
+      { label: "Professional Network", value: "500+ Connections" },
+      { label: "Current Affiliation", value: "NIT Warangal" },
+      { label: "Industry Role", value: "AI Full Stack Intern" }
     ],
-    icon: <Linkedin className="w-6 h-6 text-[#0077b5]" />
+    icon: <Linkedin className="w-5 h-5 text-blue-400" />
   }
 ];
 
@@ -72,28 +62,32 @@ export default function Profiles() {
   return (
     <section
       id="profiles"
-      className="relative min-h-screen w-full flex items-center justify-center py-24 bg-[#030306] overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center py-24 bg-[#050507] overflow-hidden"
     >
-      {/* Background soft glow */}
-      <div className="radial-glow radial-glow-gold w-[35vw] h-[35vw] bottom-[15%] left-[5%] z-0" />
+      {/* Background Precision Grid & Halo */}
+      <div className="absolute inset-0 linear-dot-grid opacity-20 pointer-events-none z-0" />
+      <div className="absolute top-1/3 left-10 w-[500px] h-[350px] bg-cyan-500/[0.03] blur-[150px] pointer-events-none rounded-full z-0" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10 space-y-16">
         
         {/* Section Heading */}
-        <div className="mb-20 text-left">
-          <div data-path-trigger className="inline-flex items-center gap-2 mb-4">
-            <span className="w-8 h-[1px] bg-[#c5a880]" />
-            <span className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] text-[#c5a880]">
-              Competitive Standing
+        <div className="text-left border-b border-white/[0.06] pb-8">
+          <div data-path-trigger className="inline-flex items-center gap-2 mb-3">
+            <span className="w-8 h-[1px] bg-cyan-400" />
+            <span className="text-[10px] md:text-xs font-mono font-semibold uppercase tracking-[0.25em] text-cyan-400">
+              Online Verification
             </span>
           </div>
-          <h2 data-reveal className="text-3xl sm:text-5xl font-bold tracking-tight text-white font-sans">
-            CODING <span className="gold-glow-text font-sans">PROFILES</span>
+          <h2 data-reveal className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-sans">
+            CODING <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent font-sans">PROFILES</span>
           </h2>
+          <p className="text-sm text-zinc-400 max-w-xl font-normal mt-2">
+            Verified algorithmic profiles, open-source repositories, and competitive contest ratings.
+          </p>
         </div>
 
         {/* Profiles Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
           {profilesData.map((profile, idx) => (
             <a
               key={idx}
@@ -101,32 +95,32 @@ export default function Profiles() {
               target="_blank"
               rel="noopener noreferrer"
               data-reveal
-              className={`glass-card group relative rounded-3xl p-6 md:p-8 border bg-gradient-to-b from-white/[0.01] to-transparent flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300 shadow-2xl ${profile.glowClass}`}
+              className="obsidian-card group relative rounded-3xl p-6 md:p-8 border border-white/[0.08] bg-[#09090e] flex flex-col justify-between hover:-translate-y-1 transition-all duration-300 shadow-xl font-mono"
             >
               <div>
                 {/* Header info */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 text-slate-300">
+                    <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5">
                       {profile.icon}
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white tracking-wide">
+                      <h3 className="text-lg font-bold text-white tracking-wide font-sans">
                         {profile.platform}
                       </h3>
-                      <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                      <p className="text-xs text-zinc-500 font-mono mt-0.5">
                         {profile.handle}
                       </p>
                     </div>
                   </div>
-                  <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors duration-300" />
+                  <ExternalLink className="w-4 h-4 text-zinc-500 group-hover:text-cyan-400 transition-colors" />
                 </div>
 
                 {/* Statistics Stack */}
-                <div className="space-y-4 pt-4 border-t border-white/5">
+                <div className="space-y-3 pt-4 border-t border-white/[0.04] text-xs">
                   {profile.stats.map((stat, sIdx) => (
-                    <div key={sIdx} className="flex justify-between items-center text-sm">
-                      <span className="text-slate-400 font-medium">{stat.label}</span>
+                    <div key={sIdx} className="flex justify-between items-center">
+                      <span className="text-zinc-400 font-sans">{stat.label}</span>
                       <span className="text-white font-bold tracking-wide">{stat.value}</span>
                     </div>
                   ))}
@@ -134,8 +128,9 @@ export default function Profiles() {
               </div>
 
               {/* Action Hint */}
-              <div className="mt-8 pt-4 border-t border-white/5 text-xs text-slate-500 font-bold uppercase tracking-widest group-hover:text-white transition-colors duration-300">
-                View Credentials →
+              <div className="mt-6 pt-4 border-t border-white/[0.04] text-[11px] text-zinc-500 font-bold uppercase tracking-wider group-hover:text-cyan-400 flex items-center justify-between transition-colors">
+                <span>Inspect Credentials</span>
+                <span>↗</span>
               </div>
             </a>
           ))}

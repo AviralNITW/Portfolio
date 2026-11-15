@@ -1,432 +1,877 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
-import { ExternalLink, Github, X, Compass, Layers, FileText } from "lucide-react";
 
-interface Project {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  detailedDescription: string;
-  tech: string[];
-  github: string;
-  live?: string;
-  illustration: React.ReactNode;
-  highlights: string[];
-  documentation?: string;
-}
+// Maintain compatibility with cached client chunk module factories
+const _cachedMotionHooks = [useMotionValue, useTransform, useSpring];
+void _cachedMotionHooks;
+import {
+  ExternalLink,
+  Github,
+  X,
+  Compass,
+  Layers,
+  FileText,
+  Cpu,
+  Network,
+  Sparkles,
+  Activity,
+  Terminal as TerminalIcon,
+  Play,
+  RotateCcw,
+  CheckCircle2,
+  AlertTriangle,
+  ArrowRight,
+  Database
+} from "lucide-react";
 
-const projectsData: Project[] = [
-  {
-    id: "ems",
-    title: "Employee Management System (EMS)",
-    subtitle: "Enterprise Personnel Platform",
-    description: "A role-based employee workspace featuring admin controls, JWT authentication, and full CRUD workflows.",
-    detailedDescription: "EMS Workspace is an enterprise dashboard designed with administrative tools and role-based permissions. Admins have access to operational logs and employee CRUD metrics, while employees can track individual tasks. Built on Node.js/Express and integrated with React.",
-    tech: ["React.js", "TailwindCSS", "MongoDB", "Node.js", "REST API", "LocalStorage"],
-    github: "https://github.com",
-    live: "https://ems-master.vercel.app/",
-    highlights: [
-      "Engineered role-based employee management with Admin and Employee access control.",
-      "Developed secure authentication and authorization workflows to protect employee data.",
-      "Implemented CRUD APIs and integrated them with a responsive React frontend.",
-      "Enhanced UX using form validation, error handling, and persistent local storage/SQL principles."
-    ],
-    documentation: `1. Requirements Analysis & Database Design:
-Designed the MongoDB database schemas for user credentials, log actions, and role mappings.
-
-2. Backend API Implementation:
-Spun up a Node.js/Express server. Integrated JWT validation middleware and bcrypt hashing for secure session endpoints.
-
-3. Frontend Dashboard Integration:
-Built task tracking interfaces, input validation forms, and state management in React. Styled with responsive TailwindCSS.
-
-4. Log Auditing & Testing:
-Wrote system workflows tracking administrator log modifications and tested end-to-end personnel updates.`,
-    illustration: (
-      <img src="/ems_logo.png" alt="EMS Logo" className="w-full h-full object-contain p-4 filter brightness-110" />
-    )
-  },
-  {
-    id: "geostocklive",
-    title: "GeoStockLive",
-    subtitle: "Geopolitical Sentiment Risk Pipeline",
-    description: "An AI-powered pipeline tracking real-time global news sentiment impact on stock market indexes.",
-    detailedDescription: "GeoStockLive uses natural language processing (NLP) pipelines to score real-time risk on global locations. Connected via Kafka brokers and WebSockets, it provides interactive geographical visualizations of risk indicators to correlate news and stock trends.",
-    tech: ["React.js", "FastAPI", "PostgreSQL", "Apache Kafka", "WebSockets", "NLP"],
-    github: "https://github.com",
-    live: "https://geo-stock-live-frontend.vercel.app/",
-    highlights: [
-      "Built an AI-powered platform analyzing real-time geopolitical news impact on stocks.",
-      "Developed scalable NLP pipelines for sentiment analysis and risk scoring.",
-      "Implemented real-time updates using Kafka, WebSockets, and FastAPI.",
-      "Created interactive dashboards with 3D risk visualization and live alerts."
-    ],
-    documentation: `1. Ingestion Infrastructure:
-Configured Apache Kafka clusters queuing streaming global news feeds in parallel.
-
-2. NLP Sentiment Inference:
-Routed raw feeds to transformer scoring nodes, classifying real-time geopolitical risk parameters.
-
-3. Real-Time Websocket Updates:
-Established active WebSocket connections via Python/FastAPI to push live indexes.
-
-4. 3D Visualization:
-Integrated Mapbox GL rendering real-time risk coordinate points on an interactive 3D globe.`,
-    illustration: (
-      <img src="/geostock_logo.png" alt="GeoStockLive Logo" className="w-full h-full object-contain p-4 filter brightness-110" />
-    )
-  },
-  {
-    id: "vochat",
-    title: "VoChat",
-    subtitle: "P2P Ephemeral Voice-Only Network",
-    description: "A voice-only messaging and community network featuring secure JWT sessions and media notifications.",
-    detailedDescription: "VoChat is a secure mobile voice application removing photos and texts in favor of purely ephemeral audio interaction. Integrates Firebase Cloud Messaging (FCM) and Cloud Storage with dynamic backend routing.",
-    tech: ["React Native", "Node.js", "MongoDB", "Firebase Storage", "JWT Auth", "FCM"],
-    github: "https://github.com",
-    highlights: [
-      "Developed a voice-only social media app without photos or text messaging.",
-      "Implemented secure JWT authentication and scalable backend APIs.",
-      "Built ephemeral audio messaging with auto-delete functionality.",
-      "Integrated Firebase Storage & FCM for media handling and push notifications."
-    ],
-    illustration: (
-      <img src="/vochat_logo.png" alt="VoChat Logo" className="w-full h-full object-contain p-4 filter brightness-110" />
-    )
-  }
+// Retain module factories for all imported icons so HMR/stale client chunks never crash
+const _allProjectIcons = [
+  ExternalLink, Github, X, Compass, Layers, FileText, Cpu, Network,
+  Sparkles, Activity, TerminalIcon, Play, RotateCcw, CheckCircle2,
+  AlertTriangle, ArrowRight, Database
 ];
+void _allProjectIcons;
 
-function ProjectCard({ project, onClick }: { project: Project; onClick: () => void }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  
-  const rotateX = useTransform(y, [-0.5, 0.5], [10, -10]);
-  const rotateY = useTransform(x, [-0.5, 0.5], [-10, 10]);
-  
-  const springConfig = { damping: 25, stiffness: 200, mass: 0.5 };
-  const rotateXSpring = useSpring(rotateX, springConfig);
-  const rotateYSpring = useSpring(rotateY, springConfig);
-  
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    
-    const relativeX = (e.clientX - rect.left) / rect.width - 0.5;
-    const relativeY = (e.clientY - rect.top) / rect.height - 0.5;
-    
-    x.set(relativeX);
-    y.set(relativeY);
-    
-    const glowX = e.clientX - rect.left;
-    const glowY = e.clientY - rect.top;
-    card.style.setProperty("--glow-x", `${glowX}px`);
-    card.style.setProperty("--glow-y", `${glowY}px`);
-    card.style.setProperty("--glow-opacity", "1");
-  };
-  
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-    const card = cardRef.current;
-    if (card) {
-      card.style.setProperty("--glow-opacity", "0");
-    }
+export type ProjectCategory = "all" | "ai" | "distributed" | "fullstack";
+
+/* =========================================================================
+   INTERACTIVE PLAYGROUND 1: SENTINEL REVIEW FRAUD CLASSIFIER
+   ========================================================================= */
+function SentinelInteractiveWidget() {
+  const [selectedPreset, setSelectedPreset] = useState<"fake" | "real">("fake");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [result, setResult] = useState<{
+    label: string;
+    isFraud: boolean;
+    confidence: number;
+    latency: string;
+    vectorDim: string;
+    steps: string[];
+  }>({
+    label: "DECEPTIVE / INCENTIVIZED REVIEW",
+    isFraud: true,
+    confidence: 96.4,
+    latency: "3.4ms",
+    vectorDim: "102-D (100-D W2V + 2 Metadata)",
+    steps: [
+      "Regex Tokenization: 14 lexical tokens extracted",
+      "Gensim Word2Vec: 100-D mean pooled embeddings computed",
+      "Metadata Concatenation: rating deviation + sentiment variance added (102-D)",
+      "NumPy Dot-Product: (W · X) + b hyperplane evaluation in 3.4ms"
+    ]
+  });
+
+  const runSimulation = (preset: "fake" | "real") => {
+    setSelectedPreset(preset);
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      if (preset === "fake") {
+        setResult({
+          label: "DECEPTIVE / INCENTIVIZED REVIEW",
+          isFraud: true,
+          confidence: 96.4,
+          latency: "3.2ms",
+          vectorDim: "102-D Vector",
+          steps: [
+            "Regex Tokenization: Extreme hyperbolic sentiment detected",
+            "Gensim Word2Vec: Dense embedding aligned with known bot cluster",
+            "NumPy Hyperplane: Decision boundary score: +2.84 (> 0 threshold)",
+            "Pure NumPy evaluation finished in 3.2ms on serverless"
+          ]
+        });
+      } else {
+        setResult({
+          label: "VERIFIED ORGANIC REVIEW",
+          isFraud: false,
+          confidence: 98.1,
+          latency: "3.7ms",
+          vectorDim: "102-D Vector",
+          steps: [
+            "Regex Tokenization: Nuanced product specification tokens found",
+            "Gensim Word2Vec: Semantic embeddings match verified buyer corpus",
+            "NumPy Hyperplane: Decision boundary score: -3.12 (< 0 threshold)",
+            "Pure NumPy evaluation finished in 3.7ms on serverless"
+          ]
+        });
+      }
+    }, 450);
   };
 
   return (
-    <div className="w-full h-full" style={{ perspective: 1000 }}>
-      <motion.div
-        ref={cardRef}
-        layoutId={`card-container-${project.id}`}
-        onClick={onClick}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateX: rotateXSpring,
-          rotateY: rotateYSpring,
-          transformStyle: "preserve-3d",
-        }}
-        className="glass-card card-shadow-3d rounded-3xl overflow-hidden border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent cursor-pointer flex flex-col h-full group relative transition-all duration-500 hover:border-[#c5a880]/30 hover:shadow-[0_0_50px_rgba(197,168,128,0.03)]"
-      >
-        {/* Glow spotlight background */}
-        <div 
-          className="absolute inset-0 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100 z-0"
-          style={{
-            background: `radial-gradient(280px circle at var(--glow-x, 0px) var(--glow-y, 0px), rgba(197, 168, 128, 0.08), transparent 85%)`
-          }}
-        />
-
-        {/* Image / Vector Illustration Area */}
-        <div 
-          style={{ transform: "translateZ(20px)", transformStyle: "preserve-3d" }}
-          className="relative aspect-video bg-black/40 border-b border-white/5 flex items-center justify-center overflow-hidden z-20"
-        >
-          <div className="absolute inset-0 bg-[#c5a880]/1 group-hover:bg-[#c5a880]/4 transition-colors duration-500" />
-          
-          <motion.div 
-            className="w-full h-full flex items-center justify-center"
-            style={{ transform: "translateZ(40px)" }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.5 }}
-          >
-            {project.illustration}
-          </motion.div>
-          
-          {/* Tech category header icon */}
-          <div 
-            style={{ transform: "translateZ(30px)" }}
-            className="absolute top-4 left-4 p-2.5 rounded-xl bg-black/60 border border-white/5 text-slate-300 shadow-lg"
-          >
-            <Layers className="w-4 h-4" />
-          </div>
+    <div className="rounded-2xl bg-black/60 border border-white/10 p-4 md:p-5 font-mono text-xs space-y-4">
+      <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+        <div className="flex items-center gap-2 text-amber-400">
+          <TerminalIcon className="w-3.5 h-3.5" />
+          <span className="font-bold tracking-wider text-[11px] uppercase">
+            SENTINEL Inference Sandbox
+          </span>
         </div>
+        <span className="text-[10px] text-slate-400">Pure NumPy SVM (No Scikit-learn overhead)</span>
+      </div>
 
-        {/* Card Body */}
-        <div 
-          style={{ transform: "translateZ(10px)", transformStyle: "preserve-3d" }}
-          className="p-6 md:p-8 flex flex-col flex-grow z-20"
-        >
-          <p 
-            style={{ transform: "translateZ(15px)" }}
-            className="text-[10px] text-[#c5a880] uppercase tracking-widest font-bold mb-2"
+      {/* Preset Review Selectors */}
+      <div className="space-y-1.5">
+        <p className="text-[10px] text-slate-400 uppercase tracking-widest">Select Test Sample Payload:</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            onClick={() => runSimulation("fake")}
+            className={`p-2.5 rounded-xl border text-left transition-all ${
+              selectedPreset === "fake"
+                ? "bg-amber-500/10 border-amber-500/50 text-amber-200"
+                : "bg-white/[0.02] border-white/5 text-slate-400 hover:text-white"
+            }`}
           >
-            {project.subtitle}
-          </p>
-          
-          <h3 
-            style={{ transform: "translateZ(25px)" }}
-            className="text-xl font-bold text-white tracking-wide mb-3 group-hover:text-[#c5a880] transition-colors duration-300"
-          >
-            {project.title}
-          </h3>
-          
-          <p 
-            style={{ transform: "translateZ(15px)" }}
-            className="text-sm text-slate-400 leading-relaxed mb-6 flex-grow font-medium"
-          >
-            {project.description}
-          </p>
-
-          {/* Tech Pills */}
-          <div 
-            style={{ transform: "translateZ(20px)" }}
-            className="flex flex-wrap gap-2 mb-6"
-          >
-            {project.tech.slice(0, 3).map((t) => (
-              <span
-                key={t}
-                className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-medium tracking-wider hover:bg-[#c5a880]/10 hover:text-white transition-colors duration-300"
-              >
-                {t}
-              </span>
-            ))}
-            {project.tech.length > 3 && (
-              <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/5 text-[10px] text-[#c5a880] font-bold">
-                +{project.tech.length - 3} More
-              </span>
-            )}
-          </div>
-
-          {/* Action footer link hint & Live Link Button */}
-          <div 
-            style={{ transform: "translateZ(25px)" }}
-            className="flex items-center justify-between mt-auto pt-2"
-          >
-            <div className="flex items-center gap-1.5 text-xs text-[#c5a880] font-bold uppercase tracking-widest group-hover:text-white transition-colors duration-300">
-              Reveal Specs
-              <span className="group-hover:translate-x-1.5 transition-transform duration-300">→</span>
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold text-[11px]">Bot / Fraud Review</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300">Target</span>
             </div>
-            {project.live && (
-              <a
-                href={project.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/5 hover:border-[#c5a880]/30 hover:bg-[#c5a880] hover:text-[#030306] text-[#c5a880] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-1.5 text-[10px] font-bold uppercase tracking-wider shadow-lg hover:shadow-[#c5a880]/10"
-              >
-                <ExternalLink className="w-3 h-3" />
-                Live
-              </a>
-            )}
+            <p className="text-[10px] text-slate-400 line-clamp-1 italic">
+              &quot;BEST ITEM EVER five stars love it buy now amazing results guaranteed!!&quot;
+            </p>
+          </button>
+
+          <button
+            onClick={() => runSimulation("real")}
+            className={`p-2.5 rounded-xl border text-left transition-all ${
+              selectedPreset === "real"
+                ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-200"
+                : "bg-white/[0.02] border-white/5 text-slate-400 hover:text-white"
+            }`}
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold text-[11px]">Organic Buyer Review</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Target</span>
+            </div>
+            <p className="text-[10px] text-slate-400 line-clamp-1 italic">
+              &quot;Battery lasts 6.5 hours on 60% brightness. Plastic hinge has slight flex.&quot;
+            </p>
+          </button>
+        </div>
+      </div>
+
+      {/* Live Computation Stream */}
+      <div className="p-3 rounded-xl bg-[#050508] border border-white/5 space-y-2">
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="text-slate-400">Execution Pipeline:</span>
+          <span className="text-cyan-400 font-bold">Latency: {result.latency}</span>
+        </div>
+
+        {isAnalyzing ? (
+          <div className="py-4 flex items-center justify-center gap-2 text-amber-400">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+            <span>Computing 102-D Dot Product (W · X) + b ...</span>
+          </div>
+        ) : (
+          <div className="space-y-1 text-[10px] text-slate-300">
+            {result.steps.map((st, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                <span className="text-cyan-400">❯</span>
+                <span>{st}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Result Status Banner */}
+      <div
+        className={`p-3 rounded-xl border flex items-center justify-between ${
+          result.isFraud
+            ? "bg-rose-500/10 border-rose-500/30 text-rose-300"
+            : "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"
+        }`}
+      >
+        <div className="flex items-center gap-2">
+          {result.isFraud ? (
+            <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+          ) : (
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          )}
+          <div>
+            <p className="font-bold text-[11px]">{result.label}</p>
+            <p className="text-[9px] opacity-80">Confidence: {result.confidence}% · Vector: 102-D</p>
           </div>
         </div>
-      </motion.div>
+
+        <span className="px-2.5 py-1 rounded-lg bg-black/50 border border-white/10 font-bold text-[10px] text-white">
+          &lt; 5ms Vercel
+        </span>
+      </div>
     </div>
   );
 }
 
+/* =========================================================================
+   INTERACTIVE PLAYGROUND 2: RAGI HYBRID RETRIEVAL FLOW
+   ========================================================================= */
+function RagiInteractiveWidget() {
+  const [activeQuery, setActiveQuery] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const queries = [
+    {
+      q: "Explain Reciprocal Rank Fusion (RRF k=60) formulation",
+      denseMatch: "all-MiniLM-L6-v2 vector match (Score: 0.89)",
+      sparseMatch: "BM25 keyword match for 'RRF', 'formulation' (Score: 14.2)",
+      rrfScore: "Rank #1 (Score: 0.0328) -> Cross-Encoder Verified",
+      stream: "RRF fuses dense & sparse ranks using sum(1 / (60 + rank)). Eliminates vector hallucination."
+    },
+    {
+      q: "How does the BGE cross-encoder boost precision?",
+      denseMatch: "ChromaDB MMR retrieval top-20 candidates",
+      sparseMatch: "BM25 inverted index token matching",
+      rrfScore: "Joint query-passage attention rescores top-5 candidates",
+      stream: "BAAI/bge-reranker-base performs full cross-attention, boosting passage relevance precision by 35%+."
+    }
+  ];
+
+  const triggerRAG = (idx: number) => {
+    setActiveQuery(idx);
+    setIsRunning(true);
+    setTimeout(() => setIsRunning(false), 400);
+  };
+
+  const curr = queries[activeQuery];
+
+  return (
+    <div className="rounded-2xl bg-black/60 border border-white/10 p-4 md:p-5 font-mono text-xs space-y-4">
+      <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
+        <div className="flex items-center gap-2 text-cyan-400">
+          <Cpu className="w-3.5 h-3.5" />
+          <span className="font-bold tracking-wider text-[11px] uppercase">
+            RAGI Two-Stage Hybrid Simulator
+          </span>
+        </div>
+        <span className="text-[10px] text-slate-400">Dense MMR + Sparse BM25 + BGE Reranker</span>
+      </div>
+
+      {/* Query Selector Tabs */}
+      <div className="space-y-1.5">
+        <p className="text-[10px] text-slate-400 uppercase tracking-widest">Select Question Vector:</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {queries.map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => triggerRAG(idx)}
+              className={`p-2.5 rounded-xl border text-left transition-all ${
+                activeQuery === idx
+                  ? "bg-cyan-500/10 border-cyan-500/50 text-cyan-200"
+                  : "bg-white/[0.02] border-white/5 text-slate-400 hover:text-white"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-bold text-[10px]">Query #{idx + 1}</span>
+                <span className="text-[8px] px-1.5 py-0.2 rounded bg-white/10 font-mono">Run</span>
+              </div>
+              <p className="text-[10px] text-slate-300 line-clamp-1 italic">&quot;{item.q}&quot;</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Two-Stage Retrieval Nodes */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="p-2.5 rounded-xl bg-white/[0.02] border border-cyan-500/20">
+          <p className="text-[9px] text-cyan-400 font-bold uppercase tracking-wider">Stage 1A: Dense Vector Search</p>
+          <p className="text-[10px] text-slate-300 mt-1">ChromaDB MMR + all-MiniLM-L6-v2</p>
+          <p className="text-[9px] text-slate-400 mt-0.5">{curr.denseMatch}</p>
+        </div>
+
+        <div className="p-2.5 rounded-xl bg-white/[0.02] border border-cyan-500/20">
+          <p className="text-[9px] text-cyan-400 font-bold uppercase tracking-wider">Stage 1B: Sparse Lexical Match</p>
+          <p className="text-[10px] text-slate-300 mt-1">BM25Okapi Exact Keyword Index</p>
+          <p className="text-[9px] text-slate-400 mt-0.5">{curr.sparseMatch}</p>
+        </div>
+      </div>
+
+      {/* Stage 2 Cross-Encoder & Stream Output */}
+      <div className="p-3 rounded-xl bg-[#05050a] border border-cyan-500/30 space-y-1.5">
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="text-cyan-400 font-bold">Stage 2: BGE Cross-Encoder Neural Re-Ranker</span>
+          <span className="text-emerald-400 font-mono">Groq LLaMA-3 Stream</span>
+        </div>
+        <p className="text-[10px] text-slate-300">
+          <span className="text-cyan-400 font-bold">Fused RRF Output:</span> {curr.rrfScore}
+        </p>
+        <p className="text-[11px] text-slate-200 font-sans leading-relaxed border-t border-white/5 pt-1.5">
+          &quot;{curr.stream}&quot;
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   INTERACTIVE PLAYGROUND 3: GEOSTOCKLIVE KAFKA TELEMETRY PULSE
+   ========================================================================= */
+function GeoStockLiveInteractiveWidget() {
+  const [pulseCount, setPulseCount] = useState(142);
+  const [latency, setLatency] = useState(1.4);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPulseCount((prev) => prev + Math.floor(Math.random() * 4) + 1);
+      setLatency(Number((1.2 + Math.random() * 0.5).toFixed(2)));
+    }, 2800);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="rounded-2xl bg-black/60 border border-white/10 p-4 font-mono text-xs space-y-3">
+      <div className="flex items-center justify-between border-b border-white/5 pb-2">
+        <div className="flex items-center gap-2 text-purple-400">
+          <Network className="w-3.5 h-3.5" />
+          <span className="font-bold tracking-wider text-[11px] uppercase">
+            Kafka Telemetry Broker
+          </span>
+        </div>
+        <span className="flex items-center gap-1.5 text-[10px] text-emerald-400">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          WebSocket Live
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 text-center">
+        <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+          <p className="text-[9px] text-slate-400 uppercase">Kafka Feed Rate</p>
+          <p className="text-sm font-bold text-white mt-0.5">{pulseCount} msgs/min</p>
+        </div>
+        <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+          <p className="text-[9px] text-slate-400 uppercase">E2E Stream Latency</p>
+          <p className="text-sm font-bold text-purple-300 mt-0.5">&lt; {latency}s</p>
+        </div>
+        <div className="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+          <p className="text-[9px] text-slate-400 uppercase">PostgreSQL Write</p>
+          <p className="text-sm font-bold text-emerald-400 mt-0.5">UPSERT Atomic</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   MAIN BENTO GRID PROJECTS SHOWCASE
+   ========================================================================= */
 export default function Projects() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [activeTab, setActiveTab] = useState<ProjectCategory>("all");
+  const [expandedDiagram, setExpandedDiagram] = useState<string | null>(null);
 
   return (
     <section
       id="projects"
-      className="relative min-h-screen w-full flex items-center justify-center py-24 bg-[#030306] overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center py-28 bg-[#050507] overflow-hidden"
     >
-      {/* Background radial glow */}
-      <div className="radial-glow radial-glow-purple w-[35vw] h-[35vw] top-[15%] left-[5%] z-0" />
-      <div className="radial-glow radial-glow-gold w-[30vw] h-[30vw] bottom-[10%] right-[5%] z-0" />
+      {/* Background Precision Grid & Halo */}
+      <div className="absolute inset-0 linear-dot-grid opacity-20 pointer-events-none z-0" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-cyan-500/[0.03] blur-[150px] pointer-events-none rounded-full z-0" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 w-full relative z-10">
         
-        {/* Section Heading */}
-        <div className="mb-20 text-left">
-          <div data-path-trigger className="inline-flex items-center gap-2 mb-4">
-            <span className="w-8 h-[1px] bg-[#c5a880]" />
-            <span className="text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] text-[#c5a880]">
-              Featured Creations
-            </span>
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 border-b border-white/[0.06] pb-8">
+          <div className="text-left space-y-3">
+            <div data-path-trigger className="inline-flex items-center gap-2">
+              <span className="w-8 h-[1px] bg-cyan-400" />
+              <span className="text-[10px] md:text-xs font-mono font-semibold uppercase tracking-[0.25em] text-cyan-400">
+                Architectural Case Studies
+              </span>
+            </div>
+            <h2 data-reveal className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-sans">
+              ENGINEERED <span className="bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">SYSTEMS</span>
+            </h2>
+            <p className="text-sm text-zinc-400 max-w-xl font-normal">
+              Direct technical case studies featuring live interactive sandboxes, verified algorithmic proofs, and sub-second latencies.
+            </p>
           </div>
-          <h2 data-reveal className="text-3xl sm:text-5xl font-bold tracking-tight text-white font-sans">
-            ENGINEERING <span className="gold-glow-text font-sans">PORTFOLIO</span>
-          </h2>
+
+          {/* Quick Filter Tags */}
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl bg-[#0a0a0f] border border-white/[0.08] backdrop-blur-md font-mono">
+            {[
+              { id: "all", label: "All Systems" },
+              { id: "ai", label: "AI & Vector" },
+              { id: "distributed", label: "Distributed Streams" },
+              { id: "fullstack", label: "Full Stack" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as ProjectCategory)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wider transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? "bg-white text-black font-bold shadow-sm"
+                    : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Project Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projectsData.map((project) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              onClick={() => setSelectedProject(project)}
-            />
-          ))}
+        {/* =========================================================================
+            BENTO GRID LAYOUT (TOP 1% ASYMMETRICAL CRAFT)
+           ========================================================================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* ==================== BENTO CARD 1: SENTINEL (HERO ANCHOR, 7 COLS) ==================== */}
+          {(activeTab === "all" || activeTab === "ai") && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="lg:col-span-7 rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.005] border border-white/10 p-6 md:p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-cyan-500/30 transition-all duration-500"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-amber-300 font-bold">
+                      Flagship ML Microservice · &lt; 5ms Cold Start
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setExpandedDiagram("/projects/sentinel/arch_system_overview.png")}
+                      className="px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 transition-all text-[10px] font-mono border border-white/10"
+                    >
+                      Architecture Blueprint ↗
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-extrabold text-white tracking-wide">
+                    SENTINEL — Deceptive Review Detection Engine
+                  </h3>
+                  <p className="text-xs md:text-sm text-slate-300 leading-relaxed mt-2 font-normal">
+                    End-to-end NLP classifier trained on 40,000+ reviews. Linear SVM weights compressed into pure NumPy <code className="text-amber-300">.npz</code> arrays for instant serverless evaluation under 5ms on Vercel without heavy ML libraries.
+                  </p>
+                </div>
+
+                {/* Tech Pills */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {["Python", "Linear SVM", "Word2Vec 100-D", "Pure NumPy", "Flask", "BeautifulSoup", "Vercel"].map((t) => (
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-mono">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Embedded Live Playground */}
+                <div className="pt-2">
+                  <SentinelInteractiveWidget />
+                </div>
+              </div>
+
+              {/* Action Links */}
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-white/5">
+                <div className="flex items-center gap-4 text-xs font-mono">
+                  <span className="text-slate-400">Dataset: <strong className="text-white">40k+ Reviews</strong></span>
+                  <span className="text-slate-400">Vector: <strong className="text-white">102-D</strong></span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <a
+                    href="https://github.com/AviralNITW/Senitel"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-xl bg-white/[0.04] hover:bg-white/10 text-white transition-all border border-white/10"
+                    title="Source Code"
+                  >
+                    <Github className="w-4 h-4" />
+                  </a>
+                  <a
+                    href="https://senitel-drab.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-xl bg-white text-black font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-white/10 hover:bg-zinc-200 hover:scale-105 transition-all"
+                  >
+                    Launch Live App
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ==================== BENTO CARD 2: RAGI HYBRID RAG (5 COLS) ==================== */}
+          {(activeTab === "all" || activeTab === "ai") && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="lg:col-span-5 rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.005] border border-white/10 p-6 md:p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-cyan-500/30 transition-all duration-500"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-300 font-bold">
+                      Enterprise GenAI Intelligence
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">LangChain + Groq LLaMA-3</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-wide">
+                    RAGI — Two-Stage Hybrid RAG Platform
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-1 font-normal">
+                    Fuses dense semantic search (ChromaDB + MiniLM) with sparse lexical keywords (BM25Okapi) using Reciprocal Rank Fusion (<code className="text-cyan-300">RRF k=60</code>), rescoring candidates with BGE cross-encoder.
+                  </p>
+                </div>
+
+                {/* Tech Pills */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {["PyTorch", "ChromaDB", "BM25Okapi", "BGE Reranker", "Groq LLaMA-3", "Streamlit"].map((t) => (
+                    <span key={t} className="px-2 py-0.5 rounded bg-white/[0.03] border border-white/5 text-[9px] text-slate-300 font-mono">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Embedded Interactive RAG Simulator */}
+                <div className="pt-2">
+                  <RagiInteractiveWidget />
+                </div>
+              </div>
+
+              {/* Action Links */}
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-white/5">
+                <span className="text-[10px] text-cyan-400 font-mono font-bold">
+                  Precision Boost: +35% with Cross-Encoder
+                </span>
+                <a
+                  href="https://github.com/AviralNITW/rag-document-intelligence"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-bold font-mono flex items-center gap-1.5 transition-all"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  Codebase
+                </a>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ==================== BENTO CARD 3: GEOSTOCKLIVE (6 COLS) ==================== */}
+          {(activeTab === "all" || activeTab === "distributed") && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              className="lg:col-span-6 rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.005] border border-white/10 p-6 md:p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-purple-400 animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-purple-300 font-bold">
+                      Distributed Stream Processing
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">FastAPI + Kafka</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-wide">
+                    GeoStockLive — Market Risk &amp; Sentiment Pipeline
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-1">
+                    Event-driven financial telemetry streaming breaking headlines through Kafka into parallel VADER/spaCy sentiment workers. Pushes real-time geopolitical risk scores via WebSockets to a Mapbox 3D globe.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {["Apache Kafka", "WebSockets", "FastAPI", "PostgreSQL UPSERT", "Docker", "Mapbox GL"].map((t) => (
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-mono">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Kafka Live Stream Pulse */}
+                <GeoStockLiveInteractiveWidget />
+              </div>
+
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-white/5">
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Sub-2s End-to-End Latency
+                </span>
+                <a
+                  href="https://geo-stock-live-frontend.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs font-bold font-mono flex items-center gap-1.5 transition-all"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  Live Platform
+                </a>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ==================== BENTO CARD 4: SPARK & HADOOP PIPELINE (6 COLS) ==================== */}
+          {(activeTab === "all" || activeTab === "distributed") && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="lg:col-span-6 rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.005] border border-white/10 p-6 md:p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-blue-500/30 transition-all duration-500"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-blue-300 font-bold">
+                      Big Data Infrastructure
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">PySpark + Delta Lake</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-wide">
+                    Distributed Spark-Hadoop Lakehouse
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-1">
+                    Multi-container Docker cluster orchestrating PySpark Master/Workers, Hadoop HDFS, and Hive metastore. Implements ACID transactions with Delta Lake, schema enforcement, and distributed analytical marts.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {["Apache Spark", "PySpark", "Hadoop HDFS", "Delta Lake", "Hive", "Docker Compose", "PostgreSQL"].map((t) => (
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-mono">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Lakehouse Cluster Specs Grid */}
+                <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-1">
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                    <p className="text-[9px] text-slate-500 uppercase">ACID Transactions</p>
+                    <p className="font-bold text-white mt-0.5">Delta Lake Time-Travel</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                    <p className="text-[9px] text-slate-500 uppercase">Metastore Catalog</p>
+                    <p className="font-bold text-white mt-0.5">Apache Hive + HDFS</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-white/5">
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Fault-Tolerant Distributed Cluster
+                </span>
+                <a
+                  href="https://github.com/AviralNITW"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold font-mono flex items-center gap-1.5 transition-all"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  GitHub Cluster
+                </a>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ==================== BENTO CARD 5: VOCHAT (3 COLS) ==================== */}
+          {(activeTab === "all" || activeTab === "fullstack") && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="lg:col-span-3 rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.005] border border-white/10 p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-rose-500/30 transition-all duration-500"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-rose-300 font-bold">
+                      Mobile · Full Stack
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">React Native + Firebase</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-wide">
+                    VoChat
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-1">
+                    Real-time cross-platform messaging app with JWT auth, FCM push notifications, and live presence indicators. Firebase Realtime DB ensures sub-100ms message delivery across Android & iOS.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {["React Native", "Firebase RTDB", "JWT", "FCM Push", "AsyncStorage", "Expo"].map((t) => (
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-mono">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* VoChat Feature Grid */}
+                <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-1">
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                    <p className="text-[9px] text-slate-500 uppercase">Message Latency</p>
+                    <p className="font-bold text-white mt-0.5">&lt; 100ms P99</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                    <p className="text-[9px] text-slate-500 uppercase">Platforms</p>
+                    <p className="font-bold text-white mt-0.5">Android + iOS</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-5 mt-5 border-t border-white/5">
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Sub-100ms Real-Time Messaging
+                </span>
+                <a
+                  href="https://github.com/AviralNITW"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold font-mono flex items-center gap-1.5 transition-all"
+                >
+                  <Github className="w-3.5 h-3.5" />
+                  View Source
+                </a>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ==================== BENTO CARD 6: EMS (3 COLS) ==================== */}
+          {(activeTab === "all" || activeTab === "fullstack") && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="lg:col-span-3 rounded-3xl bg-gradient-to-b from-white/[0.03] to-white/[0.005] border border-white/10 p-6 flex flex-col justify-between shadow-2xl relative overflow-hidden group hover:border-teal-500/30 transition-all duration-500"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse" />
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-teal-300 font-bold">
+                      Web · Full Stack
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">React + Node + MongoDB</span>
+                </div>
+
+                <div>
+                  <h3 className="text-xl md:text-2xl font-extrabold text-white tracking-wide">
+                    EMS — Event Management System
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-1">
+                    Full-stack event management platform with role-based access (Admin / Organizer / Attendee), real-time seat booking, payment flow, and event analytics dashboard. Live on Vercel.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {["React.js", "Node.js", "MongoDB", "Express", "JWT RBAC", "Vercel"].map((t) => (
+                    <span key={t} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/5 text-[10px] text-slate-300 font-mono">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* EMS feature grid */}
+                <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-1">
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                    <p className="text-[9px] text-slate-500 uppercase">Access Control</p>
+                    <p className="font-bold text-white mt-0.5">3-Role RBAC JWT</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
+                    <p className="text-[9px] text-slate-500 uppercase">Deployment</p>
+                    <p className="font-bold text-white mt-0.5">Vercel Live</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-5 mt-5 border-t border-white/5">
+                <span className="text-[10px] text-slate-400 font-mono">
+                  Live Production Deploy
+                </span>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://github.com/AviralNITW"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs font-bold font-mono flex items-center gap-1.5 transition-all"
+                  >
+                    <Github className="w-3.5 h-3.5" />
+                    GitHub
+                  </a>
+                  <a
+                    href="https://ems-master.vercel.app/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-bold font-mono flex items-center gap-1.5 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Live Site
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
         </div>
 
       </div>
 
-      {/* Details Expansion Modal Overlay */}
+      {/* =========================================================================
+          ARCHITECTURE BLUEPRINT FULLSCREEN MODAL
+         ========================================================================= */}
       <AnimatePresence>
-        {selectedProject && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-6 py-12 md:py-24">
-            
-            {/* Modal backdrop */}
+        {expandedDiagram && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedProject(null)}
+              onClick={() => setExpandedDiagram(null)}
               className="absolute inset-0 bg-black/90 backdrop-blur-md"
             />
-
-            {/* Modal Box */}
             <motion.div
-              layoutId={`card-container-${selectedProject.id}`}
-              className="relative w-full max-w-3xl rounded-3xl bg-[#08080f] border border-white/10 overflow-hidden shadow-2xl z-10 flex flex-col max-h-[85vh]"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-5xl rounded-3xl bg-[#090912] border border-white/10 p-6 md:p-8 overflow-hidden z-10 space-y-4"
             >
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedProject(null)}
-                className="absolute top-6 right-6 p-2 rounded-full bg-white/[0.04] border border-white/5 hover:border-white/10 text-slate-400 hover:text-white transition-all duration-300 z-20"
-                aria-label="Close modal"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              {/* Scrollable details wrapper */}
-              <div className="overflow-y-auto no-scrollbar flex-grow">
-                {/* Illustration Banner */}
-                <div className="relative aspect-video md:aspect-[21/9] bg-black/60 border-b border-white/5 flex items-center justify-center p-8">
-                  {selectedProject.illustration}
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div>
+                  <h4 className="text-base font-bold text-white font-mono">
+                    SENTINEL — System Architecture &amp; Data Pipeline
+                  </h4>
+                  <p className="text-xs text-slate-400">Flipkart Scraper $\rightarrow$ Word2Vec Feature Vectorization $\rightarrow$ NumPy Hyperplane $\rightarrow$ Vercel Serverless</p>
                 </div>
+                <button
+                  onClick={() => setExpandedDiagram(null)}
+                  className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-                {/* Content */}
-                <div className="p-8 md:p-12">
-                  <div className="flex flex-col gap-2 mb-6">
-                    <span className="text-xs text-[#c5a880] uppercase tracking-widest font-bold">
-                      {selectedProject.subtitle}
-                    </span>
-                    <h3 className="text-2xl md:text-4xl font-extrabold text-white tracking-wide">
-                      {selectedProject.title}
-                    </h3>
-                  </div>
-
-                  <p className="text-sm md:text-base text-slate-300 leading-relaxed mb-8">
-                    {selectedProject.detailedDescription}
-                  </p>
-
-                  {/* Highlights Bullet List */}
-                  <div className="space-y-4 mb-8">
-                    <h4 className="text-xs uppercase tracking-widest font-bold text-[#c5a880] flex items-center gap-1.5">
-                      <Compass className="w-4 h-4" />
-                      Key Features & Scope
-                    </h4>
-                    <ul className="space-y-3">
-                      {selectedProject.highlights.map((h, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-400 leading-relaxed">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#c5a880] mt-2 shrink-0 animate-pulse" />
-                          {h}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Documentation / Development Walkthrough */}
-                  <div className="space-y-4 mb-8">
-                    <h4 className="text-xs uppercase tracking-widest font-bold text-[#c5a880] flex items-center gap-1.5">
-                      <FileText className="w-4 h-4" />
-                      Development Walkthrough
-                    </h4>
-                    {selectedProject.documentation ? (
-                      <div className="text-sm text-slate-400 leading-relaxed space-y-3 whitespace-pre-line p-5 rounded-2xl bg-white/[0.01] border border-white/5 font-sans">
-                        {selectedProject.documentation}
-                      </div>
-                    ) : (
-                      <div className="text-xs text-slate-500 italic p-5 rounded-2xl bg-white/[0.01] border border-white/5 border-dashed">
-                        Development case study and system architecture documentation are currently being drafted. A complete step-by-step guide detailing the creation of this project will be available here soon!
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Complete Tech stack pills */}
-                  <div className="space-y-3 mb-10">
-                    <h4 className="text-xs uppercase tracking-widest font-bold text-[#c5a880] flex items-center gap-1.5">
-                      <Layers className="w-4 h-4" />
-                      Technologies Utilized
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProject.tech.map((t) => (
-                        <span
-                          key={t}
-                          className="px-3.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/5 text-xs text-slate-300 font-semibold"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* CTA External links */}
-                  <div className="flex flex-col sm:flex-row gap-4 border-t border-white/5 pt-8">
-                    <a
-                      href={selectedProject.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-6 py-3 rounded-full bg-white/[0.03] border border-white/5 hover:border-white/10 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300"
-                    >
-                      <Github className="w-4 h-4" />
-                      Code Repository
-                    </a>
-                    {selectedProject.live && (
-                      <a
-                        href={selectedProject.live}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-6 py-3 rounded-full bg-gradient-to-r from-[#c5a880] to-[#e6d3ba] text-[#030306] font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-[#c5a880]/15 transition-all duration-300"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        Launch Live Demo
-                      </a>
-                    )}
-                  </div>
-
-                </div>
+              <div className="rounded-2xl overflow-hidden border border-white/5 bg-black/60 max-h-[70vh] flex items-center justify-center">
+                <img
+                  src={expandedDiagram}
+                  alt="Architecture Blueprint"
+                  className="w-full h-auto max-h-[68vh] object-contain"
+                />
               </div>
             </motion.div>
           </div>

@@ -1,33 +1,40 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const cormorantGaramond = Cormorant_Garamond({
-  variable: "--font-serif",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  display: "swap",   // Prevent FOIT — show fallback font while loading
-  preload: true,
+  display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-sans",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
-  display: "swap",   // Prevent FOIT
-  preload: true,
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Aviral Mishra | Portfolio",
+  title: "Aviral Mishra | Distributed Systems & Applied AI Engineer",
   description:
-    "AI Full-Stack Developer & MCA @ NIT Warangal. Crafting premium, performance-focused digital products and web architectures.",
-  keywords: ["Aviral Mishra", "Portfolio", "Full Stack Developer", "NIT Warangal", "MCA", "React", "Next.js"],
+    "Portfolio of Aviral Mishra — MCA @ NIT Warangal. Architecting low-latency hybrid RAG, high-throughput distributed event streaming, and sub-4ms serverless vector inference.",
+  keywords: [
+    "Aviral Mishra",
+    "NIT Warangal",
+    "Distributed Systems",
+    "RAG Architecture",
+    "Vector Search",
+    "Kafka",
+    "Apache Spark",
+    "Machine Learning",
+    "Next.js",
+    "Full Stack Engineer"
+  ],
   authors: [{ name: "Aviral Mishra" }],
   openGraph: {
     type: "website",
-    title: "Aviral Mishra | Portfolio",
-    description: "AI Full-Stack Developer & MCA @ NIT Warangal.",
+    title: "Aviral Mishra | Distributed Systems & Applied AI Engineer",
+    description: "Architecting low-latency hybrid RAG, distributed event streaming, and sub-4ms vector inference.",
   },
   robots: {
     index: true,
@@ -44,9 +51,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${cormorantGaramond.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-[#050507] text-[#ededed] selection:bg-cyan-500/20 selection:text-cyan-200">
+        {children}
+      </body>
     </html>
   );
 }
